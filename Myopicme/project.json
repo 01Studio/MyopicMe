@@ -8,10 +8,22 @@
     "renderMode" : 0,
     "engineDir":"frameworks/cocos2d-html5",
 
-    "modules" : ["cocos2d"],
+    "modules" : ["cocos2d","chipmunk"],
 
     "jsList" : [
         "src/resource.js",
-        "src/app.js"
+        "src/AnimationLayer.js",
+        "src/app.js",
+        "src/BackgroundLayer.js",
+        "src/CityScene.js",
+        "src/Enemy.js",
+        "src/FireLayer.js",
+        "src/GameOverLayer.js",
+        "src/global.js",
+        "src/Hinder.js",
+        "src/Recognizer.js",
+        "src/Reward.js",
+        "src/StatusLayer.js",
+        "src/WelcomeScene.js"
     ]
 }
