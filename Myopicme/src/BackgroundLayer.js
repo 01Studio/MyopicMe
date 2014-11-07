@@ -23,10 +23,18 @@ var BackgroundLayer=cc.Layer.extend({
 		//添加地图
 		this.addChild(this.map01);
 		//获取每个地图的大小
-		this.mapSize=cc.size(this.map01.width,this.map01.height);
+		this.mapSize=cc.size(this.map01.getContentSize().width,this.map01.getContentSize().height);
 		this.map02.setPosition(cc.p(this.mapSize.width, 0));
 		this.addChild(this.map02);
 		cc.log("background is load");
+		
+		cc.spriteFrameCache.addSpriteFrames(res.background_plist);
+		this.spriteSheet=new cc.SpriteBatchNode(res.background_png);
+		this.addChild(this.spriteSheet);
+		
+		this.loadObjects(this.map01, 0);
+		this.loadObjects(this.map02, 1);
+		
 		this.scheduleUpdate();
 	},
 	
@@ -43,31 +51,27 @@ var BackgroundLayer=cc.Layer.extend({
 		}
 		if(0==newMapIndex%2){
 			this.map02.setPositionX(this.mapSize.width*(newMapIndex+1));
-			this.loadObjects(this.map02, newMapIndex+1);
+			//this.loadObjects(this.map02, newMapIndex+1);
 		}
 		else{
 			this.map01.setPositionX(this.mapSize.width*(newMapIndex+1));
-			this.loadObjects(this.map01, newMapIndex+1);
+			//this.loadObjects(this.map01, newMapIndex+1);
 		}
 		this.mapIndex=newMapIndex;
-		this.removeObjects(newMapIndex-1);
+		//this.removeObjects(newMapIndex-1);
 		return true;
 	},
 	//载入物体
 	loadObjects:function(map,mapIndex){
-		cc.log("1");
 		var hinderGroup=map.getObjectGroup("object");
 		var hinderArray=hinderGroup.getObjects();
-		cc.log("2");
 		for(var i=0;i<hinderArray.length;i++){
-			cc.log("d");
 			var hinder=new Hinder(this.spriteSheet,
 					this.space,
 					cc.p(hinderArray[i]["x"]+this.mapWidth*mapIndex,hinderArray[i]["y"]));
-			hinder.mapIndex=mapIndex;
+			hinder._mapIndex=mapIndex;
 			this.objects.push(hinder);
 		}
-		cc.log("0");
 	},
 	//移除物体
 	removeObjects:function(mapIndex){
