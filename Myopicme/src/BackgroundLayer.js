@@ -33,7 +33,7 @@ var BackgroundLayer=cc.Layer.extend({
 		this.addChild(this.spriteSheet);
 		
 		this.loadObjects(this.map01, 0);
-		this.loadObjects(this.map02, 1);
+		//this.loadObjects(this.map02, 1);
 		
 		this.scheduleUpdate();
 	},
@@ -51,14 +51,14 @@ var BackgroundLayer=cc.Layer.extend({
 		}
 		if(0==newMapIndex%2){
 			this.map02.setPositionX(this.mapSize.width*(newMapIndex+1));
-			//this.loadObjects(this.map02, newMapIndex+1);
+			this.loadObjects(this.map02, newMapIndex+1);
 		}
 		else{
 			this.map01.setPositionX(this.mapSize.width*(newMapIndex+1));
-			//this.loadObjects(this.map01, newMapIndex+1);
+			this.loadObjects(this.map01, newMapIndex+1);
 		}
 		this.mapIndex=newMapIndex;
-		//this.removeObjects(newMapIndex-1);
+		this.removeObjects(newMapIndex-1);
 		return true;
 	},
 	//载入物体
@@ -68,7 +68,7 @@ var BackgroundLayer=cc.Layer.extend({
 		for(var i=0;i<hinderArray.length;i++){
 			var hinder=new Hinder(this.spriteSheet,
 					this.space,
-					cc.p(hinderArray[i]["x"]+this.mapWidth*mapIndex,hinderArray[i]["y"]));
+					cc.p(hinderArray[i]["x"]+this.mapSize.width*mapIndex,hinderArray[i]["y"]));
 			hinder._mapIndex=mapIndex;
 			this.objects.push(hinder);
 		}

@@ -1,29 +1,30 @@
 {
-    "project_type": "javascript",
-
-    "debugMode" : 1,
-    "showFPS" : true,
-    "frameRate" : 60,
-    "id" : "gameCanvas",
-    "renderMode" : 0,
-    "engineDir":"frameworks/cocos2d-html5",
-
-    "modules" : ["cocos2d","chipmunk","external"],
-
-    "jsList" : [
-        "src/resource.js",
-        "src/AnimationLayer.js",
-        "src/app.js",
-        "src/BackgroundLayer.js",
-        "src/CityScene.js",
-        "src/Enemy.js",
-        "src/FireLayer.js",
-        "src/GameOverLayer.js",
-        "src/global.js",
-        "src/Hinder.js",
-        "src/Recognizer.js",
-        "src/Reward.js",
-        "src/StatusLayer.js",
-        "src/WelcomeScene.js"
-    ]
+  "project_type": "javascript",
+  "debugMode": 1,
+  "showFPS": true,
+  "frameRate": 60,
+  "id": "gameCanvas",
+  "renderMode": 0,
+  "engineDir": "frameworks/cocos2d-html5",
+  "modules": [
+    "cocos2d",
+    "chipmunk",
+    "external"
+  ],
+  "jsList": [
+    "src/resource.js",
+    "src/AnimationLayer.js",
+    "src/app.js",
+    "src/BackgroundLayer.js",
+    "src/CityScene.js",
+    "src/Enemy.js",
+    "src/FireLayer.js",
+    "src/GameOverLayer.js",
+    "src/Hinder.js",
+    "src/global.js",
+    "src/Recognizer.js",
+    "src/Reward.js",
+    "src/StatusLayer.js",
+    "src/WelcomeScene.js"
+  ]
 }
