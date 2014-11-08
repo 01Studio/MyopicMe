@@ -28,7 +28,7 @@ var AnimationLayer=cc.Layer.extend({
 		this.spriteSheet=new cc.SpriteBatchNode(res.running_png);
 		this.addChild(this.spriteSheet);
 		//添加物理绑定
-		this.sprite=cc.PhysicsSprite.create(res.runner_png);
+		this.sprite=cc.PhysicsSprite.create("#runner0.png");
 		var contentSize=this.sprite.getContentSize();
 		this.body=new cp.Body(1,cp.momentForBox(1, contentSize.width, contentSize.height));
 		this.body.p=cc.p(g_startX, g_groundHeight+contentSize.height/2);
@@ -59,7 +59,7 @@ var AnimationLayer=cc.Layer.extend({
 	jump:function(){
 		cc.log("jump");
 		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
-			this.body.applyImpulse(cp.v(220,450),cp.v(0,0));
+			this.body.applyImpulse(cp.v(110,450),cp.v(0,0));
 			//applyImpulse(cp.v(x轴冲力,y轴冲力),cp.v(角加速度,弹力));
 			this.stat=RunnerStat.jumpUp;
 			this.sprite.stopAllActions();
@@ -77,12 +77,15 @@ var AnimationLayer=cc.Layer.extend({
 			}
 		}
 		else if(this.stat==RunnerStat.jumpDown){
-			if(vel.y==0){
+			if(vel.y>=0){
 				this.stat=RunnerStat.running;
 				this.sprite.stopAllActions();
 				this.sprite.runAction(this.runningAction);
 			}
 		}
+		var angle=this.body.getAngle();
+		if(angle<-0.5)this.body.setAngle(-0.5);
+		if(angle>0.5)this.body.setAngle(0.5);
 	},
 	//释放动作
 	onExit:function(){

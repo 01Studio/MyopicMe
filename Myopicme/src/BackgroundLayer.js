@@ -30,9 +30,6 @@ var BackgroundLayer=cc.Layer.extend({
 		this.spriteSheet=new cc.SpriteBatchNode(res.background_png);
 		this.addChild(this.spriteSheet);
 		
-		this.loadObjects(this.map01, 0);
-		this.loadObjects(this.map02, 1);
-		
 		this.scheduleUpdate();
 	},
 	
