@@ -1,53 +1,46 @@
+/*
+ * 游戏障碍物功能实现
+ * 
+ */
+
 var Hinder=cc.Class.extend({
 	space:null,
 	sprite:null,
 	shape:null,
 	_mapIndex:0,
+	//获取与设置所在地图的标记
 	get mapIndex(){
 		return this._mapIndex;
 	},
 	set mapIndex(index){
 		this._mapIndex=index;
 	},
-
+	
 	ctor:function(spriteSheet,space,pos){
+		
 		this.space=space;
-		var animFrames=[];
-		for(var i=0;i<8;i++){
-			var str="coin"+i+".png";
-			var frame=cc.spriteFrameCache.getSpriteFrame(str);
-			animFrames.push(frame);
-		}
-
-		var animation=cc.Animation.create(animFrames,0.2);
-		var action=cc.RepeatForever.create(cc.Animate.create(animation));
-
-		this.sprite=cc.PhysicsSprite.create("#coin0.png");
-
-		var radius=0.95*this.sprite.getContentSize().width/2;
+		//加载图形
+		this.sprite=cc.PhysicsSprite.create("#rock.png");
 		var body=new cp.StaticBody();
 		body.setPos(pos);
 		this.sprite.setBody(body);
-
-		this.shape=new cp.CircleShape(body,radius,cp.vzero);
-		this.shape.setCollisionType(1);
-		this.shape.setSensor(true);
-
-		this.space.addShape(this.shape);
-
-		this.sprite.runAction(action);
+		//设置物理形状
+		this.shape=new cp.BoxShape(body,
+				this.sprite.getContentSize().width,
+				this.sprite.getContentSize().height);
+		this.shape.setCollisionType(2);
+		this.space.addStaticShape(this.shape);
 		spriteSheet.addChild(this.sprite,1);
 	},
-
+	//用于从游戏中删除
 	removeFromParent:function(){
 		this.space.removeStaticShape(this.shape);
 		this.shape=null;
 		this.sprite.removeFromParent();
 		this.sprite=null;
 	},
-
+	//获取形状
 	getShape:function(){
 		return this.shape;
 	}
-
 });

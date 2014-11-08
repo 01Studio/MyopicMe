@@ -25,15 +25,13 @@ var BackgroundLayer=cc.Layer.extend({
 		//获取每个地图的大小
 		this.mapSize=cc.size(this.map01.getContentSize().width,this.map01.getContentSize().height);
 		this.map02.setPosition(cc.p(this.mapSize.width, 0));
-		this.addChild(this.map02);
-		cc.log("background is load");
-		
+		this.addChild(this.map02);		
 		cc.spriteFrameCache.addSpriteFrames(res.background_plist);
 		this.spriteSheet=new cc.SpriteBatchNode(res.background_png);
 		this.addChild(this.spriteSheet);
 		
 		this.loadObjects(this.map01, 0);
-		//this.loadObjects(this.map02, 1);
+		this.loadObjects(this.map02, 1);
 		
 		this.scheduleUpdate();
 	},

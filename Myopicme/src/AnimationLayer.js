@@ -58,8 +58,9 @@ var AnimationLayer=cc.Layer.extend({
 	//跳
 	jump:function(){
 		cc.log("jump");
-		if(this.stat==RunnerStat.running){
-			this.body.applyImpulse(cp.v(0,250),cp.v(0,0));
+		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
+			this.body.applyImpulse(cp.v(220,450),cp.v(0,0));
+			//applyImpulse(cp.v(x轴冲力,y轴冲力),cp.v(角加速度,弹力));
 			this.stat=RunnerStat.jumpUp;
 			this.sprite.stopAllActions();
 			this.sprite.runAction(this.jumpUpAction);
