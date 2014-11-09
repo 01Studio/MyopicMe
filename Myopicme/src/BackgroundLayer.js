@@ -68,6 +68,16 @@ var BackgroundLayer=cc.Layer.extend({
 			hinder._mapIndex=mapIndex;
 			this.objects.push(hinder);
 		};
+		var back=map.getObjectGroup("backgroundObject");
+		var backArray=back.getObjects();
+		for(var i=0;i<backArray.length;i++){
+			cc.log("load house");
+			var house=new cc.Sprite("res/hourse.png");
+			house.setPosition(backArray[i]["x"]+this.mapSize.width*mapIndex,backArray[i]["y"])
+			house.mapIndex=mapIndex;
+			this.addChild(house,100);
+			this.objects.push(house);
+		}
 	},
 	//移除物体
 	removeObjects:function(mapIndex){

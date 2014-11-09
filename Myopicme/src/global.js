@@ -28,6 +28,9 @@ if(typeof RunnerStat=="undefined"){
 //物体类型的标记，用于碰撞检测
 if(typeof TagOfSprite=="undefined"){
 	var TagOfSprite={};
-	TagOfSprite.hinder=0;
-	TagOfSprite.reward=1;
+	TagOfSprite.hinder=0;//障碍
+	TagOfSprite.glass=1;//眼镜
+	TagOfSprite.repair=2;//修复器
+	TagOfSprite.enemy=3;//敌人
+	TagOfSprite.light=4;//激光
 }
