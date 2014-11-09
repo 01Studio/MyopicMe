@@ -16,11 +16,12 @@ var Hinder=cc.Class.extend({
 		this._mapIndex=index;
 	},
 	
-	ctor:function(spriteSheet,space,pos){
+	ctor:function(spriteSheet,space,pos,tag){
 		
 		this.space=space;
 		//加载图形
-		this.sprite=cc.PhysicsSprite.create("#rock.png");
+		if(tag==1)
+		this.sprite=cc.PhysicsSprite.create("res/TexturePacker/coins and rocks/rock_test.png");
 		var body=new cp.StaticBody();
 		body.setPos(pos);
 		this.sprite.setBody(body);

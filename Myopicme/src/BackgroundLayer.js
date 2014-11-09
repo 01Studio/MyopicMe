@@ -63,10 +63,11 @@ var BackgroundLayer=cc.Layer.extend({
 		for(var i=0;i<hinderArray.length;i++){
 			var hinder=new Hinder(this.spriteSheet,
 					this.space,
-					cc.p(hinderArray[i]["x"]+this.mapSize.width*mapIndex,hinderArray[i]["y"]));
+					cc.p(hinderArray[i]["x"]+this.mapSize.width*mapIndex,hinderArray[i]["y"]),
+					1);
 			hinder._mapIndex=mapIndex;
 			this.objects.push(hinder);
-		}
+		};
 	},
 	//移除物体
 	removeObjects:function(mapIndex){

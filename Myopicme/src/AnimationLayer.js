@@ -13,6 +13,7 @@ var AnimationLayer=cc.Layer.extend({
 	jumpUpAction:null,
 	jumpDownAction:null,
 	stat:0,
+	
 	ctor:function(space){
 		this._super();
 		this.space=space;
@@ -48,6 +49,7 @@ var AnimationLayer=cc.Layer.extend({
 			onTouchEnded:this.onTouchEnded
 		}, this);
 		
+		this.body.setMoment(Infinity);
 		this.scheduleUpdate();
 	},
 	//触屏动作
@@ -59,16 +61,49 @@ var AnimationLayer=cc.Layer.extend({
 	jump:function(){
 		cc.log("jump");
 		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
-			this.body.applyImpulse(cp.v(110,450),cp.v(0,0));
+			this.body.applyImpulse(cp.v(0,450),cp.v(0,0));
 			//applyImpulse(cp.v(x轴冲力,y轴冲力),cp.v(角加速度,弹力));
 			this.stat=RunnerStat.jumpUp;
 			this.sprite.stopAllActions();
 			this.sprite.runAction(this.jumpUpAction);
+			this.fashe();
 		}
 	},
+	//激光
+	fashe:function(){
+		cc.log("fashe");
+//		this.bullet=new cc.Sprite("#runner0.png");
+//		this.bullet.setPosition(this.sprite.getPosition());
+//		this.addChild(this.bullet);
+//		this.bullet.stopAllActions();
+//		this.bullet.runAction(cc.moveBy(1, cc.p(1000,0)));
+		
+		var sprite=cc.PhysicsSprite.create("#runner0.png");
+		var contentSize=sprite.getContentSize();
+		var body=new cp.Body(1,cp.momentForBox(1, contentSize.width, contentSize.height));
+		body.p=cc.p(this.sprite.getPositionX(), this.sprite.getPositionY());
+		body.applyImpulse(cp.v(450, 0),cp.v(0, 0));
+		this.space.addBody(body);
+		this.spriteSheet.addChild(sprite);
+		shape=new cp.BoxShape(body,contentSize.width-14,contentSize.height);
+		this.space.addShape(shape);
+		sprite.setBody(body);
+		
+		
+		
+		cc.log("fashe2");
+
+		return true;
+	},
+	
 	//update
 	update:function(){
+		//设置最大速度
 		var vel=this.body.getVel();
+//		//当人物速度小于100时（即人物碰撞），游戏结束
+//		if(vel.x<100){
+//			cc.director.pause();
+//		}
 		if(this.stat==RunnerStat.jumpUp){
 			if(vel.y<0.1){
 				this.stat=RunnerStat.jumpDown;
@@ -83,6 +118,12 @@ var AnimationLayer=cc.Layer.extend({
 				this.sprite.runAction(this.runningAction);
 			}
 		}
+		else if(vel.x<400){
+			vel.x+=1;
+			this.body.setVel(vel);
+			cc.log("vel.x="+this.body.getVel().x);
+		}
+		//倾斜角设置，防止侧翻
 		var angle=this.body.getAngle();
 		if(angle<-0.5)this.body.setAngle(-0.5);
 		if(angle>0.5)this.body.setAngle(0.5);
