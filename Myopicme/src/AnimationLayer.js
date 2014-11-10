@@ -25,20 +25,26 @@ var AnimationLayer=cc.Layer.extend({
 	},
 	//动作初始化
 	init:function(){
+		//载入人物动作缓存
 		cc.spriteFrameCache.addSpriteFrames(res.running_plist);
 		this.spriteSheet=new cc.SpriteBatchNode(res.running_png);
 		this.addChild(this.spriteSheet);
 		//添加物理绑定
 		this.sprite=cc.PhysicsSprite.create("#runner0.png");
 		var contentSize=this.sprite.getContentSize();
-		this.body=new cp.Body(1,cp.momentForBox(1, contentSize.width, contentSize.height));
+		//cp.Body(质量,cp.momentForBox(转动惯量,宽,高)); Infinity无限大，使人物无法旋转
+		this.body=new cp.Body(1,cp.momentForBox(Infinity, contentSize.width, contentSize.height));
 		this.body.p=cc.p(g_startX, g_groundHeight+contentSize.height/2);
-		this.body.applyImpulse(cp.v(150, 0),cp.v(0, 0));
+		//添加冲量
+		//applyImpulse(cp.v(x轴冲力,y轴冲力),cp.v(角加速度,弹力));
+		this.body.applyImpulse(cp.v(start_speed, 0),cp.v(0, 0));
 		this.space.addBody(this.body);
 		this.spriteSheet.addChild(this.sprite);
+		//将物理计算与贴图结合
 		this.shape=new cp.BoxShape(this.body,contentSize.width-14,contentSize.height);
 		this.space.addShape(this.shape);
 		this.sprite.setBody(this.body);
+
 		
 		//设置监听
 		cc.eventManager.addListener({
@@ -49,7 +55,6 @@ var AnimationLayer=cc.Layer.extend({
 			onTouchEnded:this.onTouchEnded
 		}, this);
 		
-		this.body.setMoment(Infinity);
 		this.scheduleUpdate();
 	},
 	//触屏动作
@@ -61,17 +66,16 @@ var AnimationLayer=cc.Layer.extend({
 	jump:function(){
 		cc.log("jump");
 		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
-			this.body.applyImpulse(cp.v(0,450),cp.v(0,0));
-			//applyImpulse(cp.v(x轴冲力,y轴冲力),cp.v(角加速度,弹力));
+			this.body.applyImpulse(cp.v(0,jump_vel),cp.v(0,0));
 			this.stat=RunnerStat.jumpUp;
 			this.sprite.stopAllActions();
 			this.sprite.runAction(this.jumpUpAction);
-			this.fashe();
+			this.fire();
 		}
 	},
 	//激光
-	fashe:function(){
-		cc.log("fashe");
+	fire:function(){
+
 //		this.bullet=new cc.Sprite("#runner0.png");
 //		this.bullet.setPosition(this.sprite.getPosition());
 //		this.addChild(this.bullet);
@@ -86,12 +90,10 @@ var AnimationLayer=cc.Layer.extend({
 		this.space.addBody(body);
 		this.spriteSheet.addChild(sprite);
 		shape=new cp.BoxShape(body,contentSize.width-14,contentSize.height);
+		shape.setSensor(true);
 		this.space.addShape(shape);
 		sprite.setBody(body);
 		
-		
-		
-		cc.log("fashe2");
 
 		return true;
 	},
@@ -104,6 +106,7 @@ var AnimationLayer=cc.Layer.extend({
 //		if(vel.x<100){
 //			cc.director.pause();
 //		}
+		//下降动作
 		if(this.stat==RunnerStat.jumpUp){
 			if(vel.y<0.1){
 				this.stat=RunnerStat.jumpDown;
@@ -111,6 +114,7 @@ var AnimationLayer=cc.Layer.extend({
 				this.sprite.runAction(this.jumpDownAction);
 			}
 		}
+		//恢复跑步动作
 		else if(this.stat==RunnerStat.jumpDown){
 			if(vel.y>=0){
 				this.stat=RunnerStat.running;
@@ -118,15 +122,12 @@ var AnimationLayer=cc.Layer.extend({
 				this.sprite.runAction(this.runningAction);
 			}
 		}
-		else if(vel.x<400){
+		//限制最大速度
+		else if(vel.x<max_speed){
 			vel.x+=1;
 			this.body.setVel(vel);
-			cc.log("vel.x="+this.body.getVel().x);
+			//cc.log("vel.x="+this.body.getVel().x);
 		}
-		//倾斜角设置，防止侧翻
-		var angle=this.body.getAngle();
-		if(angle<-0.5)this.body.setAngle(-0.5);
-		if(angle>0.5)this.body.setAngle(0.5);
 	},
 	//释放动作
 	onExit:function(){
@@ -134,7 +135,7 @@ var AnimationLayer=cc.Layer.extend({
 		this.jumpUpAction.release();
 		this.jumpDownAction.release();
 	},
-	//初始化所有可能动作
+	//TODO 初始化所有可能动作  改进：将所有数值设为全局变量
 	initAction:function(){
 		//初始化动作：跑
 		var frames=[];

@@ -4,7 +4,7 @@
  */
 
 var GameOverLayer=cc.Layer.extend({
-
+	//TODO
 	ctor:function(){
 		this._super();
 		this.init();

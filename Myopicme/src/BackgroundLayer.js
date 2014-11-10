@@ -4,6 +4,7 @@
  */
 
 var BackgroundLayer=cc.Layer.extend({
+	tileMap:[],//所有地图文件
 	map01:null,
 	map02:null,
 	space:null,
@@ -17,7 +18,7 @@ var BackgroundLayer=cc.Layer.extend({
 	},
 
 	init:function(){
-		//载入地图
+		//TODO 载入地图  改：随机载入
 		this.map01=cc.TMXTiledMap.create(res.tileMap01_tmx);
 		this.map02=cc.TMXTiledMap.create(res.tileMap02_tmx);
 		//添加地图
@@ -38,12 +39,21 @@ var BackgroundLayer=cc.Layer.extend({
 		var eye=animationLayer.getEye();
 		this.checkAndReload(eye.width);
 	},
-	
+	//载入地图资源
+	loadTileMaps:function(){
+		for(var i=0;i<map_Resources.length;i++)
+		var map=cc.TMXTiledMap.create(map_Resources[i]);
+		this.tileMap.push(map);
+	},
+	//添加新地图
 	checkAndReload:function(eyeX){
 		var newMapIndex=parseInt(eyeX/this.mapSize.width);
 		if(this.mapIndex==newMapIndex){
 			return false;
 		}
+		//载入随机地图
+		//randomMap:function()
+		
 		if(0==newMapIndex%2){
 			this.map02.setPositionX(this.mapSize.width*(newMapIndex+1));
 			this.loadObjects(this.map02, newMapIndex+1);
@@ -56,6 +66,10 @@ var BackgroundLayer=cc.Layer.extend({
 		this.removeObjects(newMapIndex-1);
 		return true;
 	},
+	//随机地图
+	//TODO
+	//randomMap:function(){
+	//}
 	//载入物体
 	loadObjects:function(map,mapIndex){
 		var hinderGroup=map.getObjectGroup("object");
@@ -72,6 +86,8 @@ var BackgroundLayer=cc.Layer.extend({
 		var backArray=back.getObjects();
 		for(var i=0;i<backArray.length;i++){
 			cc.log("load house");
+			//TODO
+			//随机组合生成房子或其他背景
 			var house=new cc.Sprite("res/hourse.png");
 			house.setPosition(backArray[i]["x"]+this.mapSize.width*mapIndex,backArray[i]["y"])
 			house.mapIndex=mapIndex;
