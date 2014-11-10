@@ -4,6 +4,7 @@
  */
 var g_groundHeight=57;//地面高度
 var g_startX=80;//开始的X坐标
+var g_winwidth=cc.director.getWinSize().width;//窗口
 
 var g_topHeight=0;//地图顶端高度
 var g_accessibleTop=0;//镜头跟进高度

@@ -110,6 +110,8 @@ var BackgroundLayer=cc.Layer.extend({
 	},
 	removeOne:function(i){
 		this.objects[i].removeFromParent();
+	},
+	spliceOne:function(i){
 		this.objects.splice(i,1);
 	}
 });

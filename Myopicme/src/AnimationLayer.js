@@ -81,7 +81,12 @@ var AnimationLayer=cc.Layer.extend({
 		this.bullet.setPosition(this.sprite.getPosition());
 		this.addChild(this.bullet);
 		this.bullet.stopAllActions();
-		this.bullet.runAction(cc.moveBy(1, cc.p(1000,0)));
+		
+		var vel=this.body.getVel().x+1000;
+		var time=g_winwidth/vel;
+		cc.log(vel+"--"+time);
+		
+		this.bullet.runAction(cc.moveBy(time, cc.p(g_winwidth+600,0)));
 		this.xRays.push(this.bullet);
 		
 		
@@ -152,15 +157,18 @@ var AnimationLayer=cc.Layer.extend({
 		if(this.xRays.length >0){
 			for(i = 0; i < this.xRays.length; i++ ){
 				xRay = this.xRays[i];
-				if(objects.length > 0){
+				xRayPosX = xRay.getPositionX();
+				xRayPosY = xRay.getPositionY();
+				cc.log(xRayPosX+"--"+this.sprite.getPositionX());
+				if((xRayPosX - this.sprite.getPositionX()) > (g_winwidth - g_startX)){
+					movR.push(i);
+				}else if(objects.length > 0){
 					for(j = 0; j < objects.length; j++){
 						object = objects[j];
-						xRayPosX = xRay.getPositionX();
 						cc.log(xRay+"xray");
 						cc.log(object + "boject");
 						objectPosX = object.sprite.getPositionX();
 						distanceX = xRay.getContentSize().width;
-						xRayPosY = xRay.getPositionY();
 						objectPosY = object.sprite.getPositionY();
 						distanceY = object.sprite.getContentSize().height;
 						if((objectPosX - xRayPosX)<=distanceX && (objectPosY - xRayPosY)<=distanceY){
@@ -172,10 +180,25 @@ var AnimationLayer=cc.Layer.extend({
 				}
 			}
 		}
+		cc.log(g_winwidth+"--"+g_startX);
 		for(i = 0; i < movO.length; i++ ){
 			BackgourndLayer.removeOne(movO[i]);
 			cc.log('BOOM!!!!');
 		}
+		for(i = 0; i < movO.length; i++ ){
+			BackgourndLayer.spliceOne(movO[i]-i);
+			cc.log('BOOM!');
+		}
+		for(i = 0; i < movR.length; i++ ){
+			this.xRays[movR[i]].removeFromParent();
+			cc.log('XU!!!!');
+		}
+		for(i = 0; i < movR.length; i++ ){
+			this.xRays.splice(movR[i]-i,1);
+			cc.log('XU!!!!');
+		}
+		
+		this.sprite.no
 	},
 	//释放动作
 	onExit:function(){
@@ -225,5 +248,9 @@ var AnimationLayer=cc.Layer.extend({
 		var x=this.sprite.getPositionX()-g_startX;
 		var y=this.sprite.getPositionY()-g_groundHeight;
 		return cc.size(x, y);
+	},
+	removeOneRay:function(i){
+		cc.log(i);
+		this.xRays[i].removeFromParent();
 	}
 });
