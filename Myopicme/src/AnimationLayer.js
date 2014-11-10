@@ -13,6 +13,7 @@ var AnimationLayer=cc.Layer.extend({
 	jumpUpAction:null,
 	jumpDownAction:null,
 	stat:0,
+	xRays:[],
 	
 	ctor:function(space){
 		this._super();
@@ -75,24 +76,25 @@ var AnimationLayer=cc.Layer.extend({
 	},
 	//激光
 	fire:function(){
-
-//		this.bullet=new cc.Sprite("#runner0.png");
-//		this.bullet.setPosition(this.sprite.getPosition());
-//		this.addChild(this.bullet);
-//		this.bullet.stopAllActions();
-//		this.bullet.runAction(cc.moveBy(1, cc.p(1000,0)));
+		cc.log("fashe");
+		this.bullet=new cc.Sprite("#runner0.png");
+		this.bullet.setPosition(this.sprite.getPosition());
+		this.addChild(this.bullet);
+		this.bullet.stopAllActions();
+		this.bullet.runAction(cc.moveBy(1, cc.p(1000,0)));
+		this.xRays.push(this.bullet);
 		
-		var sprite=cc.PhysicsSprite.create("#runner0.png");
-		var contentSize=sprite.getContentSize();
-		var body=new cp.Body(1,cp.momentForBox(1, contentSize.width, contentSize.height));
-		body.p=cc.p(this.sprite.getPositionX(), this.sprite.getPositionY());
-		body.applyImpulse(cp.v(450, 0),cp.v(0, 0));
-		this.space.addBody(body);
-		this.spriteSheet.addChild(sprite);
-		shape=new cp.BoxShape(body,contentSize.width-14,contentSize.height);
-		shape.setSensor(true);
-		this.space.addShape(shape);
-		sprite.setBody(body);
+		
+//		var sprite=cc.PhysicsSprite.create("#runner0.png");
+//		var contentSize=sprite.getContentSize();
+//		var body=new cp.Body(1,cp.momentForBox(1, contentSize.width, contentSize.height));
+//		body.p=cc.p(this.sprite.getPositionX(), this.sprite.getPositionY());
+//		body.applyImpulse(cp.v(450, 0),cp.v(0, 0));
+//		this.space.addBody(body);
+//		this.spriteSheet.addChild(sprite);
+//		shape=new cp.BoxShape(body,contentSize.width-14,contentSize.height);
+//		this.space.addShape(shape);
+//		sprite.setBody(body);
 		
 
 		return true;
@@ -127,6 +129,52 @@ var AnimationLayer=cc.Layer.extend({
 			vel.x+=1;
 			this.body.setVel(vel);
 			//cc.log("vel.x="+this.body.getVel().x);
+		}
+		//倾斜角设置，防止侧翻
+		var angle=this.body.getAngle();
+		if(angle<-0.5)this.body.setAngle(-0.5);
+		if(angle>0.5)this.body.setAngle(0.5);
+		
+		var BackgourndLayer = this.getParent().getChildByTag(TagOfLayer.Background);
+		var objects = BackgourndLayer.objects;
+		var xRay = null;
+		var object = null;
+		var i = 0;
+		var j = 0;
+		var xRayPosX = null;
+		var objectPosX = null;
+		var xRayPosY = null;
+		var objectPosY = null;
+		var distanceX = null;
+		var distanceY = null;
+		var movR = [];
+		var movO = [];
+		if(this.xRays.length >0){
+			for(i = 0; i < this.xRays.length; i++ ){
+				xRay = this.xRays[i];
+				if(objects.length > 0){
+					for(j = 0; j < objects.length; j++){
+						object = objects[j];
+						xRayPosX = xRay.getPositionX();
+						cc.log(xRay+"xray");
+						cc.log(object + "boject");
+						objectPosX = object.sprite.getPositionX();
+						distanceX = xRay.getContentSize().width;
+						xRayPosY = xRay.getPositionY();
+						objectPosY = object.sprite.getPositionY();
+						distanceY = object.sprite.getContentSize().height;
+						if((objectPosX - xRayPosX)<=distanceX && (objectPosY - xRayPosY)<=distanceY){
+							movO.push(j);
+							movR.push(i);
+							cc.log('BOOM!');
+						}
+					}
+				}
+			}
+		}
+		for(i = 0; i < movO.length; i++ ){
+			BackgourndLayer.removeOne(movO[i]);
+			cc.log('BOOM!!!!');
 		}
 	},
 	//释放动作

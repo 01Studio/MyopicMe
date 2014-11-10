@@ -92,7 +92,7 @@ var BackgroundLayer=cc.Layer.extend({
 			house.setPosition(backArray[i]["x"]+this.mapSize.width*mapIndex,backArray[i]["y"])
 			house.mapIndex=mapIndex;
 			this.addChild(house,100);
-			this.objects.push(house);
+			//this.objects.push(house);
 		}
 	},
 	//移除物体
@@ -108,4 +108,8 @@ var BackgroundLayer=cc.Layer.extend({
 			return false;
 		})(this.objects,mapIndex));
 	},
+	removeOne:function(i){
+		this.objects[i].removeFromParent();
+		this.objects.splice(i,1);
+	}
 });
