@@ -13,15 +13,14 @@ var AnimationLayer=cc.Layer.extend({
 	jumpUpAction:null,
 	jumpDownAction:null,
 	stat:0,
-	xRays:[],
-	
+	//创建
 	ctor:function(space){
 		this._super();
 		this.space=space;
 		this.init();
 		this.initAction();
 		//debug使用
-		this._debugNode=cc.PhysicsDebugNode.create(this.space);
+		this._debugNode=new cc.PhysicsDebugNode(this.space);
 		this.addChild(this._debugNode, 10);
 	},
 	//动作初始化
@@ -31,7 +30,7 @@ var AnimationLayer=cc.Layer.extend({
 		this.spriteSheet=new cc.SpriteBatchNode(res.running_png);
 		this.addChild(this.spriteSheet);
 		//添加物理绑定
-		this.sprite=cc.PhysicsSprite.create("#runner0.png");
+		this.sprite=new cc.PhysicsSprite("#runner0.png");
 		var contentSize=this.sprite.getContentSize();
 		//cp.Body(质量,cp.momentForBox(转动惯量,宽,高)); Infinity无限大，使人物无法旋转
 		this.body=new cp.Body(1,cp.momentForBox(Infinity, contentSize.width, contentSize.height));
@@ -45,7 +44,6 @@ var AnimationLayer=cc.Layer.extend({
 		this.shape=new cp.BoxShape(this.body,contentSize.width-14,contentSize.height);
 		this.space.addShape(this.shape);
 		this.sprite.setBody(this.body);
-
 		
 		//设置监听
 		cc.eventManager.addListener({
@@ -66,40 +64,35 @@ var AnimationLayer=cc.Layer.extend({
 	//跳
 	jump:function(){
 		cc.log("jump");
+		//当人物为跑步或下降状态时可跳起
 		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
 			this.body.applyImpulse(cp.v(0,jump_vel),cp.v(0,0));
 			this.stat=RunnerStat.jumpUp;
 			this.sprite.stopAllActions();
 			this.sprite.runAction(this.jumpUpAction);
-			this.fire();
+			this.getParent().getParent().getChildByTag(TagOfLayer.Foreground).repair();
 		}
 	},
-	//激光
+	//TODO 最好将此部分单独处理，AnimationLayer为人物动作处理层
+	//发射激光
 	fire:function(){
-		cc.log("fashe");
-		this.bullet=new cc.Sprite("#runner0.png");
-		this.bullet.setPosition(this.sprite.getPosition());
-		this.addChild(this.bullet);
-		this.bullet.stopAllActions();
+		cc.log("fire");
 		
-		var vel=this.body.getVel().x+1000;
-		var time=g_winwidth/vel;
-		cc.log(vel+"--"+time);
-		
-		this.bullet.runAction(cc.moveBy(time, cc.p(g_winwidth+600,0)));
-		this.xRays.push(this.bullet);
-		
-		
-//		var sprite=cc.PhysicsSprite.create("#runner0.png");
-//		var contentSize=sprite.getContentSize();
-//		var body=new cp.Body(1,cp.momentForBox(1, contentSize.width, contentSize.height));
-//		body.p=cc.p(this.sprite.getPositionX(), this.sprite.getPositionY());
-//		body.applyImpulse(cp.v(450, 0),cp.v(0, 0));
-//		this.space.addBody(body);
-//		this.spriteSheet.addChild(sprite);
-//		shape=new cp.BoxShape(body,contentSize.width-14,contentSize.height);
-//		this.space.addShape(shape);
-//		sprite.setBody(body);
+		var sprite=new cc.PhysicsSprite("#runner0.png");
+		var contentSize=sprite.getContentSize();
+		var body=new cp.Body(1,cp.momentForBox(1, contentSize.width, contentSize.height));
+		body.p=cc.p(this.sprite.getPositionX(), this.sprite.getPositionY());
+		//添加浮力
+		body.applyForce(cp.v(0, -space_grivaty),cp.v(0, 0));
+		//添加子弹初始冲量
+		body.applyImpulse(cp.v(450, 0),cp.v(0, 0));
+		this.space.addBody(body);
+		this.spriteSheet.addChild(sprite);
+		var shape=new cp.BoxShape(body,contentSize.width-14,contentSize.height);
+		//设置无相互作用力
+		shape.setSensor(true);
+		this.space.addShape(shape);
+		sprite.setBody(body);
 		
 
 		return true;
@@ -135,76 +128,12 @@ var AnimationLayer=cc.Layer.extend({
 			this.body.setVel(vel);
 			//cc.log("vel.x="+this.body.getVel().x);
 		}
-		//倾斜角设置，防止侧翻
-		var angle=this.body.getAngle();
-		if(angle<-0.5)this.body.setAngle(-0.5);
-		if(angle>0.5)this.body.setAngle(0.5);
-		
-		var BackgourndLayer = this.getParent().getChildByTag(TagOfLayer.Background);
-		var objects = BackgourndLayer.objects;
-		var xRay = null;
-		var object = null;
-		var i = 0;
-		var j = 0;
-		var xRayPosX = null;
-		var objectPosX = null;
-		var xRayPosY = null;
-		var objectPosY = null;
-		var distanceX = null;
-		var distanceY = null;
-		var movR = [];
-		var movO = [];
-		if(this.xRays.length >0){
-			for(i = 0; i < this.xRays.length; i++ ){
-				xRay = this.xRays[i];
-				xRayPosX = xRay.getPositionX();
-				xRayPosY = xRay.getPositionY();
-				cc.log(xRayPosX+"--"+this.sprite.getPositionX());
-				if((xRayPosX - this.sprite.getPositionX()) > (g_winwidth - g_startX)){
-					movR.push(i);
-				}else if(objects.length > 0){
-					for(j = 0; j < objects.length; j++){
-						object = objects[j];
-						cc.log(xRay+"xray");
-						cc.log(object + "boject");
-						objectPosX = object.sprite.getPositionX();
-						distanceX = xRay.getContentSize().width;
-						objectPosY = object.sprite.getPositionY();
-						distanceY = object.sprite.getContentSize().height;
-						if((objectPosX - xRayPosX)<=distanceX && (objectPosY - xRayPosY)<=distanceY){
-							movO.push(j);
-							movR.push(i);
-							cc.log('BOOM!');
-						}
-					}
-				}
-			}
-		}
-		cc.log(g_winwidth+"--"+g_startX);
-		for(i = 0; i < movO.length; i++ ){
-			BackgourndLayer.removeOne(movO[i]);
-			cc.log('BOOM!!!!');
-		}
-		for(i = 0; i < movO.length; i++ ){
-			BackgourndLayer.spliceOne(movO[i]-i);
-			cc.log('BOOM!');
-		}
-		for(i = 0; i < movR.length; i++ ){
-			this.xRays[movR[i]].removeFromParent();
-			cc.log('XU!!!!');
-		}
-		for(i = 0; i < movR.length; i++ ){
-			this.xRays.splice(movR[i]-i,1);
-			cc.log('XU!!!!');
-		}
-		
-		this.sprite.no
 	},
-	//释放动作
-	onExit:function(){
-		this.runningAction.release();
-		this.jumpUpAction.release();
-		this.jumpDownAction.release();
+	//跟踪人物
+	getEye:function(){
+		var x=this.sprite.getPositionX()-g_startX;
+		var y=this.sprite.getPositionY()-g_groundHeight;
+		return cc.size(x, y);
 	},
 	//TODO 初始化所有可能动作  改进：将所有数值设为全局变量
 	initAction:function(){
@@ -215,7 +144,7 @@ var AnimationLayer=cc.Layer.extend({
 			var frame=cc.spriteFrameCache.getSpriteFrame(str);
 			frames.push(frame);
 		}
-		var animation=cc.Animation.create(frames, 0.1);
+		var animation=new cc.Animation(frames, 0.1);
 		this.runningAction=new cc.RepeatForever(new cc.Animate(animation));
 		this.runningAction.retain();
 		//初始化动作：跳
@@ -225,7 +154,7 @@ var AnimationLayer=cc.Layer.extend({
 			var frame=cc.spriteFrameCache.getSpriteFrame(str);
 			frames.push(frame);
 		}
-		animation=cc.Animation.create(frames, 0.2);
+		animation=new cc.Animation(frames, 0.2);
 		this.jumpUpAction=new cc.Animate(animation);
 		this.jumpUpAction.retain();
 		//初始化动作：跳下
@@ -235,22 +164,18 @@ var AnimationLayer=cc.Layer.extend({
 			var frame=cc.spriteFrameCache.getSpriteFrame(str);
 			frames.push(frame);
 		}
-		animation=cc.Animation.create(frames, 0.4);
+		animation=new cc.Animation(frames, 0.4);
 		this.jumpDownAction=new cc.Animate(animation);
 		this.jumpDownAction.retain();
-		
+
 		this.stat=RunnerStat.running;
 		this.sprite.stopAllActions();
 		this.sprite.runAction(this.runningAction);
 	},
-	//跟踪人物
-	getEye:function(){
-		var x=this.sprite.getPositionX()-g_startX;
-		var y=this.sprite.getPositionY()-g_groundHeight;
-		return cc.size(x, y);
-	},
-	removeOneRay:function(i){
-		cc.log(i);
-		this.xRays[i].removeFromParent();
+	//释放动作
+	onExit:function(){
+		this.runningAction.release();
+		this.jumpUpAction.release();
+		this.jumpDownAction.release();
 	}
 });

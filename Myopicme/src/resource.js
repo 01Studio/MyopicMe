@@ -24,7 +24,8 @@ for (var i in res) {
 
 //TODO 地图资源，用于随机载入
 var tileMapsOfCity = {
-		map01:"res/testMap2.tmx"
+		map01:"res/testMap2.tmx",
+		map02:"res/testMap2.tmx"
 };
 var map_Resources=[];
 for(var a in tileMapsOfCity){

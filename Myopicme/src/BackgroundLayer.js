@@ -9,12 +9,17 @@ var BackgroundLayer=cc.Layer.extend({
 	map02:null,
 	space:null,
 	spriteSheet:null,
-	objects:[],
 	mapSize:null,
+
+	closedMap:[],	//不可随机地图
+	openMap:[],		//可随机地图
+	maxOfClosed:5,
+	
 	ctor:function(space){
 		this._super();
 		this.space=space;
 		this.init();
+		this.openMap=map_Resources;
 	},
 
 	init:function(){
@@ -38,6 +43,7 @@ var BackgroundLayer=cc.Layer.extend({
 		var animationLayer=this.getParent().getChildByTag(TagOfLayer.Animation);
 		var eye=animationLayer.getEye();
 		this.checkAndReload(eye.width);
+		
 	},
 	//载入地图资源
 	loadTileMaps:function(){
@@ -51,25 +57,43 @@ var BackgroundLayer=cc.Layer.extend({
 		if(this.mapIndex==newMapIndex){
 			return false;
 		}
-		//载入随机地图
-		//randomMap:function()
 		
-		if(0==newMapIndex%2){
-			this.map02.setPositionX(this.mapSize.width*(newMapIndex+1));
-			this.loadObjects(this.map02, newMapIndex+1);
-		}
-		else{
-			this.map01.setPositionX(this.mapSize.width*(newMapIndex+1));
-			this.loadObjects(this.map01, newMapIndex+1);
-		}
-		this.mapIndex=newMapIndex;
-		this.removeObjects(newMapIndex-1);
+		//TODO 载入随机地图
+//		var map=this.randomMap();
+//
+//		map.setPositionX(this.mapSize.width*(newMapIndex+1));
+//		this.loadObjects(map, newMapIndex+1);
+//		this.mapIndex=newMapIndex;
+//		this.removeObjects(newMapIndex-1);
+		
+//		if(0==newMapIndex%2){
+//			this.map02.setPositionX(this.mapSize.width*(newMapIndex+1));
+//			this.loadObjects(this.map02, newMapIndex+1);
+//		}
+//		else{
+//			this.map01.setPositionX(this.mapSize.width*(newMapIndex+1));
+//			this.loadObjects(this.map01, newMapIndex+1);
+//		}
+//		this.mapIndex=newMapIndex;
+//		this.removeObjects(newMapIndex-1);
 		return true;
 	},
 	//随机地图
 	//TODO
-	//randomMap:function(){
-	//}
+	randomMap:function(){
+		var lengthOfMaps=this.openMap.length;
+		var num=parseInt(Math.random()*lengthOfMaps);
+		var map=this.openMap[num];
+		this.openMap.slice(num,num+1);//从openMap中删除一个选定的Map
+		this.closedMap.push(map);	//添加到closedMap中
+		if(lengthOfMaps/2<this.maxOfClosed)
+			lengthOfMaps=lengthOfMaps/2;
+		this.closedMap.push(map);	//添加地图到closedMap
+		if(this.closedMap.length>this.maxOfClosed){
+			this.closedMap.slice(0, 1);	//从closedMap中删除第一项
+		}
+		return map;
+	},
 	//载入物体
 	loadObjects:function(map,mapIndex){
 		var hinderGroup=map.getObjectGroup("object");
@@ -89,6 +113,7 @@ var BackgroundLayer=cc.Layer.extend({
 			//TODO
 			//随机组合生成房子或其他背景
 			var house=new cc.Sprite("res/hourse.png");
+			house.setAnchorPoint(0, 0);
 			house.setPosition(backArray[i]["x"]+this.mapSize.width*mapIndex,backArray[i]["y"])
 			house.mapIndex=mapIndex;
 			this.addChild(house,100);
@@ -107,11 +132,5 @@ var BackgroundLayer=cc.Layer.extend({
 			}
 			return false;
 		})(this.objects,mapIndex));
-	},
-	removeOne:function(i){
-		this.objects[i].removeFromParent();
-	},
-	spliceOne:function(i){
-		this.objects.splice(i,1);
 	}
 });

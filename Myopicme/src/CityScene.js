@@ -4,12 +4,12 @@
  */
 
 var CityScene=cc.Scene.extend({
-	space:null,
-	gameLayer:null,
+	space:null,//游戏空间
+	gameLayer:null,//游戏层
 	//初始化物理引擎
 	initPhysics:function(){
 		this.space=new cp.Space();
-		this.space.gravity=cp.v(0, -350);//设置重力
+		this.space.gravity=cp.v(0, space_grivaty);//设置重力
 		//边界线
 		//下界
 		var wallBottom = new cp.SegmentShape(this.space.staticBody,
@@ -77,12 +77,16 @@ var CityScene=cc.Scene.extend({
 		
 		this.gameLayer=new cc.Layer();
 		
+		
 		this.gameLayer.addChild(new BackgroundLayer(this.space), 0, TagOfLayer.Background);
 		this.gameLayer.addChild(new AnimationLayer(this.space), 0, TagOfLayer.Animation);
-		this.addChild(this.gameLayer);
+		this.addChild(this.gameLayer,0,TagOfLayer.gameLayer);
 		this.addChild(new ForegroundLayer(), 0, TagOfLayer.Foreground);
 		this.addChild(new StatusLayer(), 0, TagOfLayer.Status);
 		cc.log("CityScene is load");
+
 		this.scheduleUpdate();
+		//游戏层模糊处理
+		Filter.blurSprite(this.gameLayer, 20);
 	}
 });

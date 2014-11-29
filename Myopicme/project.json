@@ -13,10 +13,10 @@
   ],
   "jsList": [
     "src/AnimationLayer.js",
-    "src/app.js",
     "src/BackgroundLayer.js",
     "src/CityScene.js",
     "src/Enemy.js",
+    "src/Filter.js",
     "src/ForegroundLayer.js",
     "src/GameOverLayer.js",
     "src/global.js",

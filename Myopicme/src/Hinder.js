@@ -24,8 +24,9 @@ var Hinder=cc.Class.extend({
 		this.space=space;
 		//加载图形
 		if(tag==1)
-		this.sprite=cc.PhysicsSprite.create("#rock.png");
+		this.sprite=new cc.PhysicsSprite("#rock.png");
 		var body=new cp.StaticBody();
+		pos=cc.p(pos.x+this.sprite.getContentSize().width/2,pos.y+this.sprite.getContentSize().height/2);
 		body.setPos(pos);
 		this.sprite.setBody(body);
 		//设置物理形状

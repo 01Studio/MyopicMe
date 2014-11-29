@@ -12,6 +12,8 @@ var g_accessibleBottom=0;
 
 var MAX_INT=4294967295;//最大INT数值
 
+var space_grivaty=-350;//重力加速度
+
 var max_speed=400;//人物最大速度
 var jump_vel=450;//跳起冲量
 var start_speed=150;//起始速度
@@ -24,6 +26,7 @@ if(typeof TagOfLayer=="undefined"){
 	TagOfLayer.Foreground=2;
 	TagOfLayer.GameOver=3;
 	TagOfLayer.Status=4;
+	TagOfLayer.gameLayer=5;
 }
 //跑步状态的标记
 if(typeof RunnerStat=="undefined"){
