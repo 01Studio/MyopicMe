@@ -86,7 +86,13 @@ var CityScene=cc.Scene.extend({
 		cc.log("CityScene is load");
 
 		this.scheduleUpdate();
+	},	
+	BlurCityScene:function(num){
 		//游戏层模糊处理
-		Filter.blurSprite(this.gameLayer, 20);
+		Filter.blurSprite(this.gameLayer, num);
+		var maps=this.gameLayer.getChildByTag(TagOfLayer.Background).closedMap;
+		for(var i=0;i<maps.length;i++){
+			Filter.blurSprite(maps[i], num);
+		}
 	}
 });

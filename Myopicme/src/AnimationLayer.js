@@ -93,8 +93,9 @@ var AnimationLayer=cc.Layer.extend({
 		shape.setSensor(true);
 		this.space.addShape(shape);
 		sprite.setBody(body);
+				
+		this.getParent().getParent().BlurCityScene(60);
 		
-
 		return true;
 	},
 	
