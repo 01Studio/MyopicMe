@@ -13,6 +13,8 @@ var AnimationLayer=cc.Layer.extend({
 	jumpUpAction:null,
 	jumpDownAction:null,
 	stat:0,
+	hinders:[],
+	bullets:[],
 	//创建
 	ctor:function(space){
 		this._super();
@@ -93,6 +95,8 @@ var AnimationLayer=cc.Layer.extend({
 		shape.setSensor(true);
 		this.space.addShape(shape);
 		sprite.setBody(body);
+		//将激光加入子弹数组
+		this.bullets.push(sprite);
 				
 		this.getParent().getParent().BlurCityScene(60);
 		
@@ -129,6 +133,59 @@ var AnimationLayer=cc.Layer.extend({
 			this.body.setVel(vel);
 			//cc.log("vel.x="+this.body.getVel().x);
 		}
+		//利用Array对象的两个方法slice、concat来自定义删除数组的方法
+		Array.prototype.del=function(n) {//n表示第几项，从0开始算起。
+			//prototype为对象原型，注意这里为对象增加自定义方法的方法。
+			if(n<0)//如果n<0，则不进行任何操作。
+				return this;
+			else
+				return this.slice(0,n).concat(this.slice(n+1,this.length));
+			/*
+			　　　concat方法：返回一个新数组，这个新数组是由两个或更多数组组合而成的。
+			　　　　　　　　　这里就是返回this.slice(0,n)/this.slice(n+1,this.length)
+			　　 　　　　　　组成的新数组，这中间，刚好少了第n项。
+			　　　slice方法： 返回一个数组的一段，两个参数，分别指定开始和结束的位置。
+			 */
+		}
+		//判断子弹碰撞
+		var i=0,//当前子弹在数组中的位置
+			j=0,//当前障碍物在数组中的位置
+			l1=0,//子弹数组长度
+			l2=0;//障碍物数组长度
+		cc.log('HIHIHIHIHIHIHIHIHI');
+		this.hinders = this.getParent().getParent().gameLayer.getChildByTag(TagOfLayer.Background).hinders;
+		l1 = this.bullets.length;
+		l2 = this.hinders.length;
+		for(i = 0;i < l1;i++){
+			for(j = 0;j < l2;j++){
+				if(this.hinders[j].getSprite() == null)
+					continue;
+				bulletX = this.bullets[i].getPositionX();
+				bulletY = this.bullets[i].getPositionY();
+				bulletW = this.bullets[i].getContentSize().width;
+				bulletH = this.bullets[i].getContentSize().height;
+				objX = this.hinders[j].getSprite().getPositionX();
+				objY = this.hinders[j].getSprite().getPositionY();
+				objW = this.hinders[j].getSprite().getContentSize().width;
+				objH = this.hinders[j].getSprite().getContentSize().height;
+
+				cc.log('objY:'+objY+',bulletY:'+bulletY+',objH/2:'+(objH/2)+',objY - bulletY:'+Math.abs(objY - bulletY));
+				cc.log('objX:'+objX+',bulletX:'+bulletX+',bulletW/2:'+(bulletW/2)+',objW/2:'+objW/2+',objX - bulletX:'+Math.abs(objX - bulletX - bulletW/2));
+
+				if(Math.abs(objY - bulletY) <= (objH) && Math.abs(objX - bulletX - bulletW/2) <= (objW)){
+					cc.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+					this.hinders[j].getSprite().removeFromParent();
+					this.bullets[i].removeFromParent();
+					this.hinders.del(j);
+					this.bullets.del(i);
+					--j;
+					--i;
+					break;
+				}
+			}
+		}
+		
+		
 	},
 	//跟踪人物
 	getEye:function(){

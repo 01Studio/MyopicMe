@@ -43,6 +43,7 @@ var Hinder=cc.Class.extend({
 		this.shape=null;
 		this.sprite.removeFromParent();
 		this.sprite=null;
+		cc.log('adjflkajdfklajsdlf');
 	},
 	//获取形状
 	getShape:function(){

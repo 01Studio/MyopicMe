@@ -14,6 +14,7 @@ var BackgroundLayer=cc.Layer.extend({
 	openMapKey:[],	//可随机地图
 	closedMap:[],
 	objects:[],
+	hinders:[],
 	maxOfClosed:5,
 	
 	ctor:function(space){
@@ -93,6 +94,7 @@ var BackgroundLayer=cc.Layer.extend({
 					1);
 			hinder._mapIndex=mapIndex;
 			this.objects.push(hinder);
+			this.hinders.push(hinder);
 		};
 		var back=map.getObjectGroup("backgroundObject");
 		var backArray=back.getObjects();
@@ -114,6 +116,13 @@ var BackgroundLayer=cc.Layer.extend({
 				if(obj[i]._mapIndex==index){
 					obj[i].removeFromParent();
 					obj.splice(i,1);
+					//obj =  obj.slice(0,i).concat(obj.slice(i+1,obj.length));//将数组从新拼接
+					/*
+					　　　concat方法：返回一个新数组，这个新数组是由两个或更多数组组合而成的。
+					　　　　　　　　　这里就是返回this.slice(0,n)/this.slice(n+1,this.length)
+					　　 　　　　　　组成的新数组，这中间，刚好少了第n项。
+					　　　slice方法： 返回一个数组的一段，两个参数，分别指定开始和结束的位置。
+					 */
 					return true;
 				}
 			}
