@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-down" width="35" height="20" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="map" tilewidth="32" tileheight="32">
+  <image source="map.png" width="128" height="128"/>
+ </tileset>
+ <tileset firstgid="17" name="cityBackground" tilewidth="32" tileheight="32">
+  <image source="cityBackground.png" width="960" height="640"/>
+ </tileset>
+ <layer name="background" width="35" height="20">
+  <data encoding="base64" compression="zlib">
+   eJwt1FWQEGQUBeCVbqS7a1m6u2vpXrph6RIEC+kGpTEAJWzpMiiRbqVRQgkBAUVQEAk/x//hmzNz7sN5u6kiIiJSk4a0pCM9GchIJjKThaxkIzs5yEkucpOHvOQjPwWIpCBRFKIwRSgasnDoo8J2MYpTgpKUojRlKEs5ylOBilSiMlWoSjWqU4Oa1KI2dahLPaKpTwMa0ihkg9BHh+3GNKEpzWhOC1rSitbE0Ia2tKM9HehIJzrTha50ozs96EkvYulNH/rSL2Sf0MeG7f4MYCCDGMwQhvICwxjOi4xgJC/xMq/wKq8xitcZzRjGMo7xTGAik5jMlJCTQj8hbE9lGtOZwUze4E1mMZs5zGUe81nAQt7ibd7hXRaxmCW8x/ssZRnLWcEHfBhyReiXhe2P+JhP+JTP+JyVrGI1a1jLOtazgY1sYjNf8CVf8TVb2Mo2trODb9jJt+wKuTP0O8L2bvawl33s5wAHOcRhjnCUY3zH9xznBCc5xWnOcJZz/MCPnOcCF7nET/wc8lLoL4Tty1zhKtf4hevc4Ca/covb3OE3fucuf3CP+/zJXzzgIX/ziH94zBOe8oyI5/7Pp6F/HLaf08chLvGITwISkojEJCEpyUhOClLyPKlITRrSko70ZCAjmchMFrKSjewhs4Y+c9jOQU5ykZs85CUf+SlAJAWJohCFKUJRilGcEpSkFKUpQ1nKUZ4KVKQSlUNWDH35sF2FqlSjOjWoSS1qU4e61COa+jSgIY1oTBOa0ozmtKAlrWhNDG1oSzvah2wb+piw3YGOdKIzXehKN7rTg570Ipbe9KEv/ejPAAYyiMEMYSgvMIzhvMgIRvJSyBGhHx62X+YVXuU1RvE6oxnDWMYxnglMZBKTmcJUpjGdGczkDd5kFrOZw1zmMZ8FIeeFfk7YXshbvM07vMsiFrOE93ifpSxjOSv4gA/5iI/5hE/5jM9ZySpWs4a1rGM9G0KuC/2asL2RTWzmC77kK75mC1vZxnZ28A07+ZZd7GYPe9nHfg5wkEMc5ghHOcZ3fB/yWOiPhO3jnOAkpzjNGc5yjh/4kfNc4CKX+ImfucwVrnKNX7jODW7yK7e4zR1+4/eQd0J/K2zf5Q/ucZ8/+YsHPORvHvEPj3nCU54REcd/Ig5xiUd8EpCQRCQmCUlJRnJShEwW+v/u/22nlM+TitSkIS3pSE8GMpKJzGQhK9nITg5ykovc5CEv+chPASIpSBSFKBwyKvSRYbsIRSlGcUpQklKUpgxlKUd5KlCRSlSmClWpRnVqUJNa1KYOdalHNPVpEDI69HXDdkMa0ZgmNKUZzWlBS1rRmhja0JZ2tKcDHelEZ7rQlW50pwc96UUsvekTMjb0PcP2vxreRXk=
+  </data>
+ </layer>
+ <layer name="layer" width="35" height="20" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20PBxQAAPwaCvAAAQ==
+  </data>
+ </layer>
+ <objectgroup name="backgroundObject">
+  <object x="582" y="528"/>
+ </objectgroup>
+ <objectgroup name="object">
+  <object x="280" y="390"/>
+  <object x="570" y="246"/>
+  <object x="870" y="376"/>
+ </objectgroup>
+</map>

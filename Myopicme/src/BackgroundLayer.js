@@ -20,7 +20,9 @@ var BackgroundLayer=cc.Layer.extend({
 		this._super();
 		this.space=space;
 		this.init();
-		this.openMapKey=map_Resources;
+	},
+	onExit:function(){
+		this._super();
 	},
 
 	init:function(){
@@ -34,6 +36,11 @@ var BackgroundLayer=cc.Layer.extend({
 		cc.spriteFrameCache.addSpriteFrames(res.houseAndHinder_plist);
 		this.spriteSheet=new cc.SpriteBatchNode(res.houseAndHinder_png);
 		this.addChild(this.spriteSheet,1);
+		
+		this.closedMapKey=[],//不可随机地图
+		this.closedMap=[],
+		this.objects=[],
+		this.openMapKey=map_Resources.concat();//数组拷贝
 		
 		this.scheduleUpdate();
 	},
@@ -54,6 +61,7 @@ var BackgroundLayer=cc.Layer.extend({
 		//TODO 载入随机地图
 		var map=this.randomMap();
 		map.setPosition(this.mapSize.width*(newMapIndex+1),0);
+		Filter.blurSprite(map, blurSize);
 		this.addChild(map,0);
 		this.loadObjects(map, newMapIndex+1);
 		this.mapIndex=newMapIndex;

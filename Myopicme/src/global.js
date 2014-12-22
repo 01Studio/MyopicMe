@@ -18,15 +18,18 @@ var max_speed=400;//人物最大速度
 var jump_vel=450;//跳起冲量
 var start_speed=150;//起始速度
 
+var blurSize=0;
+
 //各层的标记
 if(typeof TagOfLayer=="undefined"){
 	var TagOfLayer={};
 	TagOfLayer.Animation=0;
 	TagOfLayer.Background=1;
-	TagOfLayer.Foreground=2;
-	TagOfLayer.GameOver=3;
-	TagOfLayer.Status=4;
-	TagOfLayer.gameLayer=5;
+	TagOfLayer.Enemy=2;
+	TagOfLayer.Foreground=3;
+	TagOfLayer.GameOver=4;
+	TagOfLayer.Status=5;
+	TagOfLayer.gameLayer=6;
 }
 //跑步状态的标记
 if(typeof RunnerStat=="undefined"){
