@@ -31,7 +31,8 @@ var tileMapsOfCity = {
 		map05:"res/testMap2.tmx",
 		map06:"res/testMap2.tmx",
 		map07:"res/testMap2.tmx",
-		map08:"res/testMap2.tmx"
+		map08:"res/testMap2.tmx",
+		map09:"res/testMap2.tmx"
 };
 var map_Resources=[];
 for(var map in tileMapsOfCity){

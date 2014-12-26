@@ -15,7 +15,6 @@
     "src/AnimationLayer.js",
     "src/BackgroundLayer.js",
     "src/CityScene.js",
-    "src/Enemy.js",
     "src/Filter.js",
     "src/ForegroundLayer.js",
     "src/GameOverLayer.js",
@@ -25,6 +24,8 @@
     "src/resource.js",
     "src/Reward.js",
     "src/StatusLayer.js",
-    "src/WelcomeScene.js"
+    "src/WelcomeLayer.js",
+    "src/WelcomeScene.js",
+    "src/EnemyLayer.js"
   ]
 }

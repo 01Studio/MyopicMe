@@ -24,7 +24,15 @@ var AnimationLayer=cc.Layer.extend({
 		//debug使用
 		this._debugNode=new cc.PhysicsDebugNode(this.space);
 		this.addChild(this._debugNode, 10);
+		cc.log("init");
 	},
+	onExit:function(){
+		this.runningAction.release();
+		this.jumpUpAction.release();
+		this.jumpDownAction.release();
+		this._super();
+	},
+	
 	//动作初始化
 	init:function(){
 		//载入人物动作缓存
@@ -44,6 +52,7 @@ var AnimationLayer=cc.Layer.extend({
 		this.spriteSheet.addChild(this.sprite);
 		//将物理计算与贴图结合
 		this.shape=new cp.BoxShape(this.body,contentSize.width-14,contentSize.height);
+		this.shape.setCollisionType(TagOfSprite.runner);
 		this.space.addShape(this.shape);
 		this.sprite.setBody(this.body);
 		
@@ -65,6 +74,7 @@ var AnimationLayer=cc.Layer.extend({
 	},
 	//跳
 	jump:function(){
+		
 		cc.log("jump");
 		//当人物为跑步或下降状态时可跳起
 		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
@@ -90,27 +100,38 @@ var AnimationLayer=cc.Layer.extend({
 		body.applyImpulse(cp.v(450, 0),cp.v(0, 0));
 		this.space.addBody(body);
 		this.spriteSheet.addChild(sprite);
-		var shape=new cp.BoxShape(body,contentSize.width-14,contentSize.height);
+		var shape=new cp.BoxShape(body,contentSize.width,contentSize.height);
 		//设置无相互作用力
 		shape.setSensor(true);
+		shape.setCollisionType(TagOfSprite.xray);
 		this.space.addShape(shape);
 		sprite.setBody(body);
+<<<<<<< HEAD
 		//将激光加入子弹数组
 		this.bullets.push(sprite);
 				
 		this.getParent().getParent().BlurCityScene(60);
+=======
+>>>>>>> FETCH_HEAD
 		
 		return true;
 	},
 	
 	//update
 	update:function(){
+
+		//改变shape,以适应图形大小的变化
+		this.space.removeShape(this.shape);
+		this.shape=new cp.BoxShape(this.body,this.sprite.getContentSize().width,this.sprite.getContentSize().height);
+		this.space.addShape(this.shape);
+		
 		//设置最大速度
 		var vel=this.body.getVel();
 //		//当人物速度小于100时（即人物碰撞），游戏结束
-//		if(vel.x<100){
-//			cc.director.pause();
-//		}
+		if(vel.x<100){
+			cc.director.pause();
+			this.getParent().getParent().addChild(new GameOverLayer());
+		}
 		//下降动作
 		if(this.stat==RunnerStat.jumpUp){
 			if(vel.y<0.1){
@@ -229,11 +250,5 @@ var AnimationLayer=cc.Layer.extend({
 		this.stat=RunnerStat.running;
 		this.sprite.stopAllActions();
 		this.sprite.runAction(this.runningAction);
-	},
-	//释放动作
-	onExit:function(){
-		this.runningAction.release();
-		this.jumpUpAction.release();
-		this.jumpDownAction.release();
 	}
 });

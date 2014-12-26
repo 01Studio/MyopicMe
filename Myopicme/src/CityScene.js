@@ -27,6 +27,8 @@ var CityScene=cc.Scene.extend({
 		//TODO 添加碰撞处理函数
 		this.space.addCollisionHandler(TagOfSprite.runner,TagOfSprite.hinder,
 				this.collision_runner_hinder.bind(this),null,null,null);
+		this.space.addCollisionHandler(TagOfSprite.xray,TagOfSprite.enemy,
+				this.collision_xray_enemy.bind(this),null,null,null);
 	},
 	
 	//TODO 碰撞函数 建议后期放到处理函数供多场景统一调用
@@ -37,16 +39,24 @@ var CityScene=cc.Scene.extend({
 //		var statusLayer=this.getChildByTag(TagOfLayer.Status);
 //		statusLayer.addCoin(1);
 //	},
+	//玩家与障碍
 	collision_runner_hinder:function(arbiter,space){
 		cc.log("a collision happen between runner with hinder");
+		
 	},
+	//玩家与修复器
 	collision_runner_repair:function(arbiter,space){
+		
 	},
+	//玩家与敌人
 	collision_runner_enemy:function(arbiter,space){
 	},
+	//激光与障碍
 	collision_xray_hinder:function(arbiter,space){
 	},
+	//激光与敌人
 	collision_xray_enemy:function(arbiter,space){
+		cc.log("a collision happen between xray with enemy");
 	},
 	
 	update:function(dt){
@@ -80,15 +90,19 @@ var CityScene=cc.Scene.extend({
 		
 		this.gameLayer.addChild(new BackgroundLayer(this.space), 0, TagOfLayer.Background);
 		this.gameLayer.addChild(new AnimationLayer(this.space), 0, TagOfLayer.Animation);
+		this.gameLayer.addChild(new EnemyLayer(this.space), 0, TagOfLayer.Enemy);
 		this.addChild(this.gameLayer,0,TagOfLayer.gameLayer);
 		this.addChild(new ForegroundLayer(), 0, TagOfLayer.Foreground);
 		this.addChild(new StatusLayer(), 0, TagOfLayer.Status);
 		cc.log("CityScene is load");
 
+		cc.director.resume();
+		
 		this.scheduleUpdate();
-	},	
+	},
 	BlurCityScene:function(num){
 		//游戏层模糊处理
+		blurSize=num;
 		Filter.blurSprite(this.gameLayer, num);
 		var maps=this.gameLayer.getChildByTag(TagOfLayer.Background).closedMap;
 		for(var i=0;i<maps.length;i++){

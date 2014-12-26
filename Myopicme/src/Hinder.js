@@ -23,7 +23,6 @@ var Hinder=cc.Class.extend({
 		
 		this.space=space;
 		//加载图形
-		if(tag==1)
 		this.sprite=new cc.PhysicsSprite("#rock.png");
 		var body=new cp.StaticBody();
 		pos=cc.p(pos.x+this.sprite.getContentSize().width/2,pos.y+this.sprite.getContentSize().height/2);
@@ -33,7 +32,7 @@ var Hinder=cc.Class.extend({
 		this.shape=new cp.BoxShape(body,
 				this.sprite.getContentSize().width,
 				this.sprite.getContentSize().height);
-		this.shape.setCollisionType(2);
+		this.shape.setCollisionType(TagOfSprite.hinder);
 		this.space.addStaticShape(this.shape);
 		spriteSheet.addChild(this.sprite,1);
 	},
