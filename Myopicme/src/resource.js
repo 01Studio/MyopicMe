@@ -13,8 +13,8 @@ var res = {
     running_png : "res/running_test.png", 
     running_plist : "res/running_test.plist",
     //障碍，奖励等物件
-    objects_png:"res/objects.png",
-    objects_plist:"res/objects.plist"
+    houseAndHinder_png:"res/houseAndHinder.png",
+    houseAndHinder_plist:"res/houseAndHinder.plist"
 };
 
 var g_resources = [];
