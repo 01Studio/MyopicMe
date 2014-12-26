@@ -110,3 +110,4 @@ var CityScene=cc.Scene.extend({
 		}
 	}
 });
+

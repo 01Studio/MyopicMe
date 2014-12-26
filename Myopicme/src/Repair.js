@@ -1,9 +1,9 @@
 /*
- * 游戏敌人初始化
+ * 游戏修复器功能实现
  * 
  */
 
-var Enemy=cc.Class.extend({
+var Repair=cc.Class.extend({
 	space:null,
 	sprite:null,
 	shape:null,
@@ -15,29 +15,27 @@ var Enemy=cc.Class.extend({
 	set mapIndex(index){
 		this._mapIndex=index;
 	},
+	getSprite:function(){
+		return this.sprite;
+	},
 
 	ctor:function(spriteSheet,space,pos){
+
 		this.space=space;
 		//加载图形
-		this.sprite=new cc.PhysicsSprite("#runner0.png");
+		this.sprite=new cc.PhysicsSprite("#repair.png");
 		var body=new cp.StaticBody();
+		pos=cc.p(pos.x+this.sprite.getContentSize().width/2,pos.y+this.sprite.getContentSize().height/2);
 		body.setPos(pos);
 		this.sprite.setBody(body);
 		//设置物理形状
 		this.shape=new cp.BoxShape(body,
 				this.sprite.getContentSize().width,
 				this.sprite.getContentSize().height);
-		this.shape.setCollisionType(2);
+		this.shape.setCollisionType(TagOfSprite.repair);
+		this.shape.setSensor(true);
 		this.space.addStaticShape(this.shape);
 		spriteSheet.addChild(this.sprite,1);
-	},
-	//设置enemy的基本属性
-	//TODO
-	initProperty:function(){
-	},
-	//enemy被攻击后改变位置
-	//TODO
-	changePlace:function(){
 	},
 	//用于从游戏中删除
 	removeFromParent:function(){
@@ -49,5 +47,5 @@ var Enemy=cc.Class.extend({
 	//获取形状
 	getShape:function(){
 		return this.shape;
-	},
+	}
 });

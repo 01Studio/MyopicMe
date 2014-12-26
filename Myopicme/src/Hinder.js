@@ -19,7 +19,7 @@ var Hinder=cc.Class.extend({
 		return this.sprite;
 	},
 	
-	ctor:function(spriteSheet,space,pos,tag){
+	ctor:function(spriteSheet,space,pos){
 		
 		this.space=space;
 		//加载图形
