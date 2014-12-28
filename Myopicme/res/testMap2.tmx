@@ -22,7 +22,4 @@
   <object name="#rock.png" x="888.667" y="408"/>
   <object name="#rabish.png" x="809.333" y="629.333"/>
  </objectgroup>
- <objectgroup name="repair">
-  <object x="565" y="87"/>
- </objectgroup>
 </map>

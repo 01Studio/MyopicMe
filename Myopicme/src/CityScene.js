@@ -147,4 +147,3 @@ var CityScene=cc.Scene.extend({
 		this.controller.blur(num);
 	}
 });
-

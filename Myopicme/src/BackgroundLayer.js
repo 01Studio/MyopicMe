@@ -35,8 +35,8 @@ var BackgroundLayer=cc.Layer.extend({
 		//获取每个地图的大小
 		this.mapSize=cc.size(this.map01.getContentSize().width,this.map01.getContentSize().height);
 		
-		cc.spriteFrameCache.addSpriteFrames(res.objects_plist);
-		this.spriteSheet=new cc.SpriteBatchNode(res.objects_png);
+		cc.spriteFrameCache.addSpriteFrames(res.houseAndHinder_plist);
+		this.spriteSheet=new cc.SpriteBatchNode(res.houseAndHinder_png);
 		this.addChild(this.spriteSheet,1);
 		
 		this.closedMapKey=[],//不可随机地图
@@ -94,8 +94,6 @@ var BackgroundLayer=cc.Layer.extend({
 	},
 	//载入物体
 	loadObjects:function(map,mapIndex){
-		//TODO 分开实现
-		//障碍
 		var hinderGroup=map.getObjectGroup("object");
 		var hinderArray=hinderGroup.getObjects();
 		for(var i=0;i<hinderArray.length;i++){
@@ -107,7 +105,6 @@ var BackgroundLayer=cc.Layer.extend({
 			this.objects.push(hinder);
 			this.hinders.push(hinder);
 		};
-		//房子
 		var back=map.getObjectGroup("backgroundObject");
 		var backArray=back.getObjects();
 		for(var i=0;i<backArray.length;i++){
@@ -119,17 +116,6 @@ var BackgroundLayer=cc.Layer.extend({
 			house._mapIndex=mapIndex;
 			this.spriteSheet.addChild(house,100);
 			this.objects.push(house);
-		}
-		//repair
-		var repairObjects=map.getObjectGroup("repair");
-		var repairArray=repairObjects.getObjects();
-		for(var i=0;i<repairArray.length;i++){
-			var repair=new Repair(this.spriteSheet,
-					this.space,
-					cc.p(repairArray[i]["x"]+this.mapSize.width*mapIndex,repairArray[i]["y"])
-					);
-			repair._mapIndex=mapIndex;
-			this.objects.push(repair);
 		}
 	},
 	//移除物体

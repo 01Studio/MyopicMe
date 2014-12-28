@@ -19,8 +19,8 @@ var Hinder=cc.Class.extend({
 		return this.sprite;
 	},
 	
-	ctor:function(spriteSheet,space,pos,name){
-		cc.log(name);
+
+	ctor:function(spriteSheet,space,pos,tag){
 		this.space=space;
 		//加载图形
 		this.sprite=new cc.PhysicsSprite(name);
