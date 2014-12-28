@@ -20,7 +20,6 @@ var Repair=cc.Class.extend({
 	},
 
 	ctor:function(spriteSheet,space,pos){
-
 		this.space=space;
 		//加载图形
 		this.sprite=new cc.PhysicsSprite("#repair.png");

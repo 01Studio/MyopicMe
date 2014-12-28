@@ -24,8 +24,6 @@
     "src/Recognizer.js",
     "src/Repair.js",
     "src/resource.js",
-    "src/Reward.js",
-    "src/StatusLayer.js",
     "src/WelcomeLayer.js",
     "src/WelcomeScene.js",
     "src/EnemyLayer.js"

@@ -8,19 +8,12 @@ var EnemyLayer=cc.Layer.extend({
 	sprite:null,
 	body:null,
 	shape:null,
-	_mapIndex:0,
-	//获取与设置所在地图的标记
-	get mapIndex(){
-		return this._mapIndex;
-	},
-	set mapIndex(index){
-		this._mapIndex=index;
-	},
-
+	
 	ctor:function(space){
 		this._super();
 		this.space=space;
 		this.init();
+		cc.log("enemyLayer inited");
 	},
 	init:function(){
 		//加载图形
@@ -35,6 +28,8 @@ var EnemyLayer=cc.Layer.extend({
 		//cp.Body(质量,cp.momentForBox(转动惯量,宽,高)); Infinity无限大，使人物无法旋转
 		this.body=new cp.Body(1,cp.momentForBox(Infinity, contentSize.width, contentSize.height));
 		this.body.p=cc.p(winSize.width-100,100);
+		//添加浮力，使敌人高度不变
+		this.body.applyForce(cp.v(0, -space_grivaty),cp.v(0, 0));
 		//添加冲量
 		//applyImpulse(cp.v(x轴冲力,y轴冲力),cp.v(角加速度,弹力));
 		this.body.applyImpulse(cp.v(start_speed, 0),cp.v(0, 0));
@@ -43,6 +38,7 @@ var EnemyLayer=cc.Layer.extend({
 		//将物理计算与贴图结合
 		this.shape=new cp.BoxShape(this.body,contentSize.width-14,contentSize.height);
 		this.shape.setCollisionType(TagOfSprite.enemy);
+		this.shape.setSensor(true);
 		this.space.addShape(this.shape);
 		this.sprite.setBody(this.body);
 
@@ -51,7 +47,8 @@ var EnemyLayer=cc.Layer.extend({
 	},
 	update:function(){
 		var animationLayer=this.getParent().getChildByTag(TagOfLayer.Animation);
-		this.body.setVel(animationLayer.body.getVel());
+		//使Enemy位置固定
+		this.body.p=cc.p(animationLayer.getEye().width+cc.director.getWinSize().width-100-g_startX,400);
 	},
 	
 	

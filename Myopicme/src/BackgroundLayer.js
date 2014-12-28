@@ -21,6 +21,7 @@ var BackgroundLayer=cc.Layer.extend({
 		this._super();
 		this.space=space;
 		this.init();
+		cc.log("backgroundLayer inited");
 	},
 	onExit:function(){
 		this._super();
@@ -100,8 +101,8 @@ var BackgroundLayer=cc.Layer.extend({
 		for(var i=0;i<hinderArray.length;i++){
 			var hinder=new Hinder(this.spriteSheet,
 					this.space,
-					cc.p(hinderArray[i]["x"]+this.mapSize.width*mapIndex,hinderArray[i]["y"])
-					);
+					cc.p(hinderArray[i]["x"]+this.mapSize.width*mapIndex,hinderArray[i]["y"]),
+					hinderArray[i]["name"]);
 			hinder._mapIndex=mapIndex;
 			this.objects.push(hinder);
 			this.hinders.push(hinder);

@@ -4,10 +4,13 @@
  */
 
 var AnimationLayer=cc.Layer.extend({
+	controller:null,
+	
 	sprite:null,
 	body:null,
 	shape:null,
-	spriteSheet:null,
+	spriteSheetRunner:null,
+	spriteSheetBullet:null,
 	space:null,
 	runningAction:null,
 	jumpUpAction:null,
@@ -15,6 +18,7 @@ var AnimationLayer=cc.Layer.extend({
 	stat:0,
 	hinders:[],
 	bullets:[],
+	recognizer:null,
 	//创建
 	ctor:function(space){
 		this._super();
@@ -24,7 +28,7 @@ var AnimationLayer=cc.Layer.extend({
 		//debug使用
 		this._debugNode=new cc.PhysicsDebugNode(this.space);
 		this.addChild(this._debugNode, 10);
-		cc.log("init");
+		cc.log("animationLayer inited");
 	},
 	onExit:function(){
 		this.runningAction.release();
@@ -33,12 +37,14 @@ var AnimationLayer=cc.Layer.extend({
 		this._super();
 	},
 	
+	//TODO 后期添加蹲下的动作
 	//动作初始化
 	init:function(){
+		this.controller=Controller.getInstance();
 		//载入人物动作缓存
 		cc.spriteFrameCache.addSpriteFrames(res.running_plist);
-		this.spriteSheet=new cc.SpriteBatchNode(res.running_png);
-		this.addChild(this.spriteSheet);
+		this.spriteSheetRunner=new cc.SpriteBatchNode(res.running_png);
+		this.addChild(this.spriteSheetRunner);
 		//添加物理绑定
 		this.sprite=new cc.PhysicsSprite("#runner0.png");
 		var contentSize=this.sprite.getContentSize();
@@ -49,7 +55,7 @@ var AnimationLayer=cc.Layer.extend({
 		//applyImpulse(cp.v(x轴冲力,y轴冲力),cp.v(角加速度,弹力));
 		this.body.applyImpulse(cp.v(start_speed, 0),cp.v(0, 0));
 		this.space.addBody(this.body);
-		this.spriteSheet.addChild(this.sprite);
+		this.spriteSheetRunner.addChild(this.sprite);
 		//将物理计算与贴图结合
 		this.shape=new cp.BoxShape(this.body,contentSize.width-14,contentSize.height);
 		this.shape.setCollisionType(TagOfSprite.runner);
@@ -65,16 +71,60 @@ var AnimationLayer=cc.Layer.extend({
 			onTouchEnded:this.onTouchEnded
 		}, this);
 		
+
+		cc.spriteFrameCache.addSpriteFrames(res.objects_plist);
+		this.spriteSheetBullet=new cc.SpriteBatchNode(res.objects_png);
+		this.addChild(this.spriteSheetBullet);
+		
+		this.recognizer=new SimpleRecognizer();
+		
 		this.scheduleUpdate();
 	},
+	
 	//触屏动作
 	onTouchBegan:function(touch,event){
-		event.getCurrentTarget().jump();
+		var pos=touch.getLocation();
+		event.getCurrentTarget().recognizer.beginPoint(pos.x,pos.y);
 		return true;
 	},
-	//跳
-	jump:function(){
+	onTouchMoved:function(touch,event){
+		var pos=touch.getLocation();
+		event.getCurrentTarget().recognizer.movePoint(pos.x,pos.y)
+	},
+	onTouchEnded:function(touch,event){
+		var rtn=event.getCurrentTarget().recognizer.endPoint();
+		cc.log("rtn="+rtn);
+		switch(rtn){
+		case "up":
+			event.getCurrentTarget().up();
+			break;
+		case "down":
+			event.getCurrentTarget().down();
+			break;
+		case "jump":
+			event.getCurrentTarget().jump();
+			break;
+		default:
+			break;
+		}
+	},
+	//向上
+	up:function(){
 		
+		cc.log("jump");
+		//当人物为跑步或下降状态时可跳起
+		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
+			this.body.applyImpulse(cp.v(0,jump_vel*2),cp.v(0,0));
+			this.stat=RunnerStat.jumpUp;
+			this.sprite.stopAllActions();
+			this.sprite.runAction(this.jumpUpAction);
+		}
+		else{
+			this.body.applyImpulse(cp.v(0,jump_vel*2),cp.v(0,0));
+		}
+	},//小跳
+	jump:function(){
+
 		cc.log("jump");
 		//当人物为跑步或下降状态时可跳起
 		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
@@ -82,37 +132,37 @@ var AnimationLayer=cc.Layer.extend({
 			this.stat=RunnerStat.jumpUp;
 			this.sprite.stopAllActions();
 			this.sprite.runAction(this.jumpUpAction);
-			this.getParent().getParent().getChildByTag(TagOfLayer.Foreground).repair();
 		}
+	},
+	//下滑动作
+	down:function(){
+		this.body.applyImpulse(cp.v(0, -800),cp.v(0, 0));
 	},
 	//TODO 最好将此部分单独处理，AnimationLayer为人物动作处理层
 	//发射激光
 	fire:function(){
 		cc.log("fire");
 		
-		var sprite=new cc.PhysicsSprite("#runner0.png");
+		var sprite=new cc.PhysicsSprite("#bullet.png");
 		var contentSize=sprite.getContentSize();
 		var body=new cp.Body(1,cp.momentForBox(1, contentSize.width, contentSize.height));
 		body.p=cc.p(this.sprite.getPositionX(), this.sprite.getPositionY());
 		//添加浮力
 		body.applyForce(cp.v(0, -space_grivaty),cp.v(0, 0));
 		//添加子弹初始冲量
-		body.applyImpulse(cp.v(450, 0),cp.v(0, 0));
+		body.applyImpulse(cp.v(650, 0),cp.v(0, 0));
 		this.space.addBody(body);
-		this.spriteSheet.addChild(sprite);
+		this.spriteSheetBullet.addChild(sprite);
 		var shape=new cp.BoxShape(body,contentSize.width,contentSize.height);
 		//设置无相互作用力
 		shape.setSensor(true);
 		shape.setCollisionType(TagOfSprite.xray);
 		this.space.addShape(shape);
 		sprite.setBody(body);
-<<<<<<< HEAD
 		//将激光加入子弹数组
 		this.bullets.push(sprite);
 				
 		this.getParent().getParent().BlurCityScene(60);
-=======
->>>>>>> FETCH_HEAD
 		
 		return true;
 	},
@@ -127,10 +177,9 @@ var AnimationLayer=cc.Layer.extend({
 		
 		//设置最大速度
 		var vel=this.body.getVel();
-//		//当人物速度小于100时（即人物碰撞），游戏结束
+		//当人物速度小于100时（即人物碰撞），游戏结束
 		if(vel.x<100){
-			cc.director.pause();
-			this.getParent().getParent().addChild(new GameOverLayer());
+			this.controller.askForGameOver();
 		}
 		//下降动作
 		if(this.stat==RunnerStat.jumpUp){
@@ -149,11 +198,14 @@ var AnimationLayer=cc.Layer.extend({
 			}
 		}
 		//限制最大速度
-		else if(vel.x<max_speed){
+		if(vel.x<max_speed){
 			vel.x+=1;
 			this.body.setVel(vel);
 			//cc.log("vel.x="+this.body.getVel().x);
 		}
+		//TODO 在cityScene物理引擎初始化部分完成
+		/*
+		
 		//利用Array对象的两个方法slice、concat来自定义删除数组的方法
 		Array.prototype.del=function(n) {//n表示第几项，从0开始算起。
 			//prototype为对象原型，注意这里为对象增加自定义方法的方法。
@@ -161,12 +213,12 @@ var AnimationLayer=cc.Layer.extend({
 				return this;
 			else
 				return this.slice(0,n).concat(this.slice(n+1,this.length));
-			/*
-			　　　concat方法：返回一个新数组，这个新数组是由两个或更多数组组合而成的。
-			　　　　　　　　　这里就是返回this.slice(0,n)/this.slice(n+1,this.length)
-			　　 　　　　　　组成的新数组，这中间，刚好少了第n项。
-			　　　slice方法： 返回一个数组的一段，两个参数，分别指定开始和结束的位置。
-			 */
+			　　　//concat方法：返回一个新数组，这个新数组是由两个或更多数组组合而成的。
+			　　　//　　　　　　这里就是返回this.slice(0,n)/this.slice(n+1,this.length)
+			　　 　//　　　　　组成的新数组，这中间，刚好少了第n项。
+			　　　//slice方法： 返回一个数组的一段，两个参数，分别指定开始和结束的位置。
+		
+		
 		}
 		//判断子弹碰撞
 		var i=0,//当前子弹在数组中的位置
@@ -206,7 +258,15 @@ var AnimationLayer=cc.Layer.extend({
 			}
 		}
 		
-		
+		*/
+		//子弹删除
+//		var maxX=this.getEye().width+cc.director.getWinSize().width-g_startX;
+//		for(var i=0;i<this.bullets.length;i++){
+//			if(this.bullets[i].x>maxX){
+//				this.bullets[i].removeFromParent();
+//				this.bullets.splice(i,1);
+//			}
+//		}
 	},
 	//跟踪人物
 	getEye:function(){

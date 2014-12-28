@@ -24,11 +24,6 @@ var GameOverLayer=cc.LayerColor.extend({
 		this.addChild(restart);
 	},
 	
-	onExit:function(){
-		this._super();
-	},
-	
-	
 	onRestart:function(sender){
 		cc.director.resume();
 		cc.director.runScene(new CityScene());

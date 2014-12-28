@@ -19,11 +19,11 @@ var Hinder=cc.Class.extend({
 		return this.sprite;
 	},
 	
-	ctor:function(spriteSheet,space,pos){
-		
+	ctor:function(spriteSheet,space,pos,name){
+		cc.log(name);
 		this.space=space;
 		//加载图形
-		this.sprite=new cc.PhysicsSprite("#rock.png");
+		this.sprite=new cc.PhysicsSprite(name);
 		var body=new cp.StaticBody();
 		pos=cc.p(pos.x+this.sprite.getContentSize().width/2,pos.y+this.sprite.getContentSize().height/2);
 		body.setPos(pos);
@@ -42,7 +42,6 @@ var Hinder=cc.Class.extend({
 		this.shape=null;
 		this.sprite.removeFromParent();
 		this.sprite=null;
-		cc.log('adjflkajdfklajsdlf');
 	},
 	//获取形状
 	getShape:function(){
