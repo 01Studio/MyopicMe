@@ -17,9 +17,11 @@
   <object x="582" y="528"/>
  </objectgroup>
  <objectgroup name="object">
-  <object name="#rock.png" x="280" y="390"/>
-  <object name="#rock.png" x="570" y="246"/>
+  <object name="#rock.png" x="354" y="352"/>
   <object name="#rock.png" x="888.667" y="408"/>
   <object name="#rabish.png" x="809.333" y="629.333"/>
+ </objectgroup>
+ <objectgroup name="repair">
+  <object x="582" y="146"/>
  </objectgroup>
 </map>

@@ -48,7 +48,6 @@ var CityScene=cc.Scene.extend({
 	//玩家与障碍
 	collision_runner_hinder:function(arbiter,space){
 		cc.log("a collision happen between runner with hinder");
-		
 	},
 	//玩家与修复器
 	collision_runner_repair:function(arbiter,space){

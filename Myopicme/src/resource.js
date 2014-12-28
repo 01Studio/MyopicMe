@@ -1,20 +1,14 @@
 var res = {
-	//TODO 原有，可删除
-    HelloWorld_png : "res/HelloWorld.png",
-    CloseNormal_png : "res/CloseNormal.png",
-    CloseSelected_png : "res/CloseSelected.png",
     //地图
     tileMap01_tmx : "res/testMap2.tmx",
     tileMap02_tmx : "res/testMap2.tmx",
-    map_png : "res/map.png",
     
     //人物动画帧
-    runner_png : "res/runner.png",
     running_png : "res/running_test.png", 
     running_plist : "res/running_test.plist",
     //障碍，奖励等物件
-    houseAndHinder_png:"res/houseAndHinder.png",
-    houseAndHinder_plist:"res/houseAndHinder.plist"
+    objects_png:"res/objects.png",
+    objects_plist:"res/objects.plist"
 };
 
 var g_resources = [];

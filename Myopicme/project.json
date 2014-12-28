@@ -15,15 +15,17 @@
     "src/AnimationLayer.js",
     "src/BackgroundLayer.js",
     "src/CityScene.js",
+    "src/Controller.js",
+    "src/EnemyLayer.js",
     "src/Filter.js",
     "src/ForegroundLayer.js",
     "src/GameOverLayer.js",
     "src/global.js",
     "src/Hinder.js",
     "src/Recognizer.js",
+    "src/Repair.js",
     "src/resource.js",
     "src/WelcomeLayer.js",
-    "src/WelcomeScene.js",
-    "src/EnemyLayer.js"
+    "src/WelcomeScene.js"
   ]
 }
