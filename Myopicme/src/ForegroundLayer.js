@@ -25,6 +25,7 @@ var ForegroundLayer=cc.Layer.extend({
 		var fire=new cc.Menu(menuItemFire);
 		fire.setPosition(winSize.width-100,100);
 		this.addChild(fire,1);
+		this.controller.setFireIcon(fire);
 
 		//英雄头像
 		var heroIcon=cc.Sprite("res/head.png");

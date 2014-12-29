@@ -2,13 +2,10 @@
  * 全局变量
  * 
  */
+
+//固定量
 var g_groundHeight=57;//地面高度
 var g_startX=80;//开始的X坐标
-var g_winwidth=cc.director.getWinSize().width;//窗口
-
-var g_topHeight=0;//地图顶端高度
-var g_accessibleTop=0;//镜头跟进高度
-var g_accessibleBottom=0;
 
 var MAX_INT=4294967295;//最大INT数值
 
@@ -17,6 +14,12 @@ var space_grivaty=-350;//重力加速度
 var max_speed=400;//人物最大速度
 var jump_vel=450;//跳起冲量
 var start_speed=150;//起始速度
+
+//可变量（每次场景初始化时同时对数据进行初始化）
+
+var g_topHeight;//地图顶端高度
+var g_accessibleTop;//镜头跟进高度
+var g_accessibleBottom;
 
 var blurSize=0;
 
@@ -46,4 +49,15 @@ if(typeof TagOfSprite=="undefined"){
 	TagOfSprite.repair=2;//修复器
 	TagOfSprite.enemy=3;//敌人
 	TagOfSprite.xray=4;//激光
+}
+
+//全局变量操作类
+if(typeof Global=="undefined"){
+	var Global={};
+}
+Global.initGlobals=function(){
+	blurSize=0;
+	g_topHeight=new cc.TMXTiledMap(res.tileMap01_tmx).getContentSize().height;
+	g_accessibleBottom=cc.director.getWinSize().height/2;
+	g_accessibleTop=g_topHeight-g_accessibleBottom;
 }

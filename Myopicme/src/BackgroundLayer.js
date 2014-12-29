@@ -4,8 +4,8 @@
  */
 
 var BackgroundLayer=cc.Layer.extend({
-	map01:null,
-	map02:null,
+	controller:null,
+	
 	space:null,
 	spriteSheet:null,
 	mapSize:null,
@@ -14,7 +14,6 @@ var BackgroundLayer=cc.Layer.extend({
 	openMapKey:[],	//可随机地图
 	closedMap:[],
 	objects:[],
-	hinders:[],
 	maxOfClosed:5,
 	
 	ctor:function(space){
@@ -28,12 +27,16 @@ var BackgroundLayer=cc.Layer.extend({
 	},
 
 	init:function(){
+		this.controller=Controller.getInstance();
 		//载入第一张地图
-		this.map01=new cc.TMXTiledMap(res.tileMap01_tmx);
+		var beginMap=new cc.TMXTiledMap(res.beginMap);
 		//添加地图
-		this.addChild(this.map01);
+		this.addChild(beginMap);
+		this.closedMapKey.push("beginMap");
+		this.closedMap.push(beginMap);
+		this.controller.addToBlurList(beginMap.children[0]);
 		//获取每个地图的大小
-		this.mapSize=cc.size(this.map01.getContentSize().width,this.map01.getContentSize().height);
+		this.mapSize=cc.size(beginMap.getContentSize().width,beginMap.getContentSize().height);
 		
 		cc.spriteFrameCache.addSpriteFrames(res.objects_plist);
 		this.spriteSheet=new cc.SpriteBatchNode(res.objects_png);
@@ -43,6 +46,9 @@ var BackgroundLayer=cc.Layer.extend({
 		this.closedMap=[],
 		this.objects=[],
 		this.openMapKey=map_Resources.concat();//数组拷贝
+		
+		//加入模糊队列
+		this.controller.addToBlurList(this.spriteSheet);
 		
 		this.scheduleUpdate();
 	},
@@ -63,8 +69,11 @@ var BackgroundLayer=cc.Layer.extend({
 		//TODO 载入随机地图
 		var map=this.randomMap();
 		map.setPosition(this.mapSize.width*(newMapIndex+1),0);
-		Filter.blurSprite(map, blurSize);
 		this.addChild(map,0);
+		
+		//加入模糊队列
+		this.controller.addToBlurList(map.children[0]);
+		
 		this.loadObjects(map, newMapIndex+1);
 		this.mapIndex=newMapIndex;
 		this.removeObjects(newMapIndex-1);
@@ -104,7 +113,6 @@ var BackgroundLayer=cc.Layer.extend({
 					hinderArray[i]["name"]);
 			hinder._mapIndex=mapIndex;
 			this.objects.push(hinder);
-			this.hinders.push(hinder);
 		};
 		//修复器
 		var repairGroup=map.getObjectGroup("repair");
@@ -117,19 +125,6 @@ var BackgroundLayer=cc.Layer.extend({
 			repair._mapIndex=mapIndex;
 			this.objects.push(repair);
 		};
-		//TODO 考虑删除
-		var back=map.getObjectGroup("backgroundObject");
-		var backArray=back.getObjects();
-		for(var i=0;i<backArray.length;i++){
-			//TODO
-			//随机组合生成房子或其他背景
-			var house=new cc.Sprite("#hourse.png");
-			house.setAnchorPoint(0, 0);
-			house.setPosition(backArray[i]["x"]+this.mapSize.width*mapIndex,backArray[i]["y"])
-			house._mapIndex=mapIndex;
-			this.spriteSheet.addChild(house,100);
-			this.objects.push(house);
-		}
 	},
 	//移除物体
 	removeObjects:function(mapIndex){

@@ -4,10 +4,14 @@
  */
 
 var EnemyLayer=cc.Layer.extend({
+	controller:null,
+	
 	space:null,
 	sprite:null,
+	spriteSheet:null,
 	body:null,
 	shape:null,
+	blood:null,
 	
 	ctor:function(space){
 		this._super();
@@ -16,6 +20,7 @@ var EnemyLayer=cc.Layer.extend({
 		cc.log("enemyLayer inited");
 	},
 	init:function(){
+		this.controller=Controller.getInstance();
 		//加载图形
 		var winSize=cc.director.getWinSize();
 		cc.spriteFrameCache.addSpriteFrames("res/alien.plist");
@@ -23,7 +28,7 @@ var EnemyLayer=cc.Layer.extend({
 		this.addChild(this.spriteSheet);
 		
 		//添加物理绑定
-		this.sprite=new cc.PhysicsSprite("#alien_0.png");
+		this.sprite=new cc.PhysicsSprite("#alien_1.png");
 		var contentSize=this.sprite.getContentSize();
 		//cp.Body(质量,cp.momentForBox(转动惯量,宽,高)); Infinity无限大，使人物无法旋转
 		this.body=new cp.Body(1,cp.momentForBox(Infinity, contentSize.width, contentSize.height));
@@ -41,7 +46,17 @@ var EnemyLayer=cc.Layer.extend({
 		this.shape.setSensor(true);
 		this.space.addShape(this.shape);
 		this.sprite.setBody(this.body);
-
+		
+		//敌人血量显示
+		this.blood=new cc.Sprite("#blood.png");
+		var pos=cc.p(this.sprite.getPositionX(),this.sprite.getPositionY()+this.sprite.getContentSize().height/2+this.blood.getContentSize().height);
+		this.blood.setPosition(pos);
+		this.spriteSheet.addChild(this.blood);
+		this.controller.setBossIcon(this.blood);
+		
+		//加入模糊队列
+		this.controller.addToBlurList(this.spriteSheet);
+		
 		this.scheduleUpdate();
 		
 	},
@@ -49,6 +64,8 @@ var EnemyLayer=cc.Layer.extend({
 		var animationLayer=this.getParent().getChildByTag(TagOfLayer.Animation);
 		//使Enemy位置固定
 		this.body.p=cc.p(animationLayer.getEye().width+cc.director.getWinSize().width-100-g_startX,400);
+		var pos=cc.p(this.sprite.getPositionX(),this.sprite.getPositionY()+this.sprite.getContentSize().height/2+this.blood.getContentSize().height);
+		this.blood.setPosition(pos);
 	},
 	
 	

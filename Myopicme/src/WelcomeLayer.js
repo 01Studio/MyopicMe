@@ -1,3 +1,7 @@
+/*
+ * 游戏主界面
+ * 
+ */
 var WelcomeLayer=cc.Layer.extend({
 	ctor:function(){
 		this._super();

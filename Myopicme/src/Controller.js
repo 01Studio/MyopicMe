@@ -1,7 +1,7 @@
-
 /*
  * 控制中心
  */
+
 var Controller=cc.Class.extend({
 
 	_initialized: false,
@@ -29,8 +29,11 @@ var Controller=cc.Class.extend({
 	bossAll:0,
 	bossNow:0,
 	
+	//其他
+	fireIcon:null,
+	
 	ctor:function(){
-		
+		Filter.initShader();
 	},
 
 	initialize:function(){
@@ -51,6 +54,9 @@ var Controller=cc.Class.extend({
 		this.bossAll=boss;
 		this.bossNow=this.bossAll;
 	},
+	addToBlurList:function(sprite){
+		Filter.setBlurSprite(sprite);
+	},
 	//设置头像
 	setHeroIcon:function(icon){
 		this.heroIcon=icon;
@@ -64,6 +70,9 @@ var Controller=cc.Class.extend({
 	setBossIcon:function(icon){
 		this.bossIcon=icon;
 	},
+	setFireIcon:function(icon){
+		this.fireIcon=icon;
+	},
 	
 	//主角开火
 	fire:function(){
@@ -74,8 +83,7 @@ var Controller=cc.Class.extend({
 	damaged:function(){
 		this.glassNow--;
 		if(this.glassNow==0){
-			cc.log("gameover");
-			this.glassNow=this.glassAll;
+			this.askForGameOver();
 		}
 		this.glassIcon.setScaleX(this.glassNow/this.glassAll);
 		this.blur((this.glassAll-this.glassNow)*10);
@@ -92,6 +100,10 @@ var Controller=cc.Class.extend({
 	hitBoss:function(){
 		if(this.bossNow>0){
 			this.bossNow--;
+			this.bossIcon.setScaleX(this.bossNow/this.bossAll);
+			if(this.bossNow==0){
+				this.askForGameOver();
+			}
 		}
 		else{//杀死boss
 			
@@ -100,11 +112,12 @@ var Controller=cc.Class.extend({
 	//模糊处理
 	blur:function(num){
 		//TODO 渲染效率低下，每次渲染导致画面停滞，需要修改
-		Filter.blurSprite(this.GameLayer, num);
-		var maps=this.BackgroundLayer.closedMap;
-		for(var i=0;i<maps.length;i++){
-			Filter.blurSprite(maps[i], num);
-		}
+//		Filter.blurSprite(this.GameLayer, num);
+//		var maps=this.BackgroundLayer.closedMap;
+//		for(var i=0;i<maps.length;i++){
+//			Filter.blurSprite(maps[i], num);
+//		}
+		Filter.setBlurSize(num);
 	},
 	clock:function(){
 		if(this.timeNow>0){
@@ -114,6 +127,7 @@ var Controller=cc.Class.extend({
 	//游戏结束
 	askForGameOver:function(){
 		cc.director.pause();
+		this.fireIcon.setEnabled(false);
 		this.GameScene.addChild(new GameOverLayer());
 	}
 	
@@ -127,4 +141,14 @@ Controller.getInstance=function(){
 		this._instance.initialize();
 	}
 	return this._instance;
+}
+/*
+ * 创建新实例
+ */
+Controller.getNewInstance=function(){
+	this._instance=null;
+	this._instance = this._instance || new Controller();
+	this._instance.initialize();
+	return this._instance;
+	
 }

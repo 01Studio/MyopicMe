@@ -38,13 +38,7 @@ var CityScene=cc.Scene.extend({
 	},
 	
 	//TODO 碰撞函数 建议后期放到处理函数供多场景统一调用
-	//示例
-//	collisionHinder:function(arbiter,space){
-//		var shapes=arbiter.getShapes();
-//		this.shapesToRemove.push(shapes[1]);
-//		var statusLayer=this.getChildByTag(TagOfLayer.Status);
-//		statusLayer.addCoin(1);
-//	},
+
 	//玩家与障碍
 	collision_runner_hinder:function(arbiter,space){
 		cc.log("a collision happen between runner with hinder");
@@ -65,6 +59,7 @@ var CityScene=cc.Scene.extend({
 	//激光与敌人
 	collision_xray_enemy:function(arbiter,space){
 		cc.log("a collision happen between xray with enemy");
+		this.controller.hitBoss();
 	},
 	
 	update:function(dt){
@@ -103,12 +98,10 @@ var CityScene=cc.Scene.extend({
 	onEnter:function(){
 		this._super();
 		//获取控制器
-		this.controller=Controller.getInstance();
-		this.controller.initStatus(10, 10000, 10);
+		this.controller=Controller.getNewInstance();
+		this.controller.initStatus(10, 100000, 10);
 		//初始化全局变量
-		g_topHeight=new cc.TMXTiledMap(res.tileMap01_tmx).getContentSize().height;
-		g_accessibleBottom=cc.director.getWinSize().height/2;
-		g_accessibleTop=g_topHeight-g_accessibleBottom;
+		Global.initGlobals();
 		//初始化物理引擎
 		this.initPhysics();
 		
@@ -140,9 +133,5 @@ var CityScene=cc.Scene.extend({
 		cc.director.resume();
 		
 		this.scheduleUpdate();
-	},
-	BlurCityScene:function(num){
-//		//游戏层模糊处理
-		this.controller.blur(num);
 	}
 });

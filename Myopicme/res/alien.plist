@@ -7,11 +7,11 @@
             <key>alien_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{146,2},{139,130}}</string>
+                <string>{{134,2},{139,130}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{139,130}}</string>
                 <key>sourceSize</key>
@@ -24,11 +24,24 @@
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{142,130}}</string>
                 <key>sourceSize</key>
                 <string>{142,130}</string>
+            </dict>
+            <key>blood.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,146},{150,15}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{150,15}}</string>
+                <key>sourceSize</key>
+                <string>{150,15}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -38,9 +51,9 @@
             <key>realTextureFileName</key>
             <string>alien.png</string>
             <key>size</key>
-            <string>{289,134}</string>
+            <string>{266,163}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:7bdf77b802f3f9467f4342d2de415294:8317edbc8632c2cb1d1ee402fb7f1255:de81843e51d646d6e87dbbac08c0c15a$</string>
+            <string>$TexturePacker:SmartUpdate:68f3dc8bd56ee7ef8e664510461bd1ce:530ad1d7ff4462f660aa6dcf5c81d3a9:de81843e51d646d6e87dbbac08c0c15a$</string>
             <key>textureFileName</key>
             <string>alien.png</string>
         </dict>

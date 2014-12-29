@@ -78,6 +78,10 @@ var AnimationLayer=cc.Layer.extend({
 		
 		this.recognizer=new SimpleRecognizer();
 		
+		//加入模糊队列
+		this.controller.addToBlurList(this.spriteSheetRunner);
+		this.controller.addToBlurList(this.spriteSheetBullet);
+		
 		this.scheduleUpdate();
 	},
 	
@@ -111,7 +115,7 @@ var AnimationLayer=cc.Layer.extend({
 	//向上
 	up:function(){
 		
-		cc.log("jump");
+		cc.log("up");
 		//当人物为跑步或下降状态时可跳起
 		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
 			this.body.applyImpulse(cp.v(0,jump_vel*2),cp.v(0,0));
@@ -141,7 +145,6 @@ var AnimationLayer=cc.Layer.extend({
 	//TODO 最好将此部分单独处理，AnimationLayer为人物动作处理层
 	//发射激光
 	fire:function(){
-		cc.log("fire");
 		
 		var sprite=new cc.PhysicsSprite("#bullet.png");
 		var contentSize=sprite.getContentSize();
@@ -161,8 +164,6 @@ var AnimationLayer=cc.Layer.extend({
 		sprite.setBody(body);
 		//将激光加入子弹数组
 		this.bullets.push(sprite);
-				
-		this.getParent().getParent().BlurCityScene(60);
 		
 		return true;
 	},
