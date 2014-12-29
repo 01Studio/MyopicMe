@@ -1,7 +1,6 @@
 var res = {
-    //地图
-    tileMap01_tmx : "res/testMap2.tmx",
-    tileMap02_tmx : "res/testMap2.tmx",
+    //初始地图
+    beginMap : "res/testMap2.tmx",
     
     //人物动画帧
     running_png : "res/running_test.png", 
