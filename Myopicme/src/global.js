@@ -57,7 +57,7 @@ if(typeof Global=="undefined"){
 }
 Global.initGlobals=function(){
 	blurSize=0;
-	g_topHeight=new cc.TMXTiledMap(res.tileMap01_tmx).getContentSize().height;
+	g_topHeight=new cc.TMXTiledMap(res.beginMap).getContentSize().height;
 	g_accessibleBottom=cc.director.getWinSize().height/2;
 	g_accessibleTop=g_topHeight-g_accessibleBottom;
 }
