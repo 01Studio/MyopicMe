@@ -20,11 +20,11 @@ var CityScene=cc.Scene.extend({
 				0);// thickness of wall
 		this.space.addStaticShape(wallBottom);
 		//上界
-		wallBottom = new cp.SegmentShape(this.space.staticBody,
+		var wallBottom2 = new cp.SegmentShape(this.space.staticBody,
 				cp.v(0, g_topHeight),// start point
 				cp.v(MAX_INT, g_topHeight),// MAX INT:4294967295
 				0);// thickness of wall
-		this.space.addStaticShape(wallBottom);
+		this.space.addStaticShape(wallBottom2);
 		
 		//TODO 添加碰撞处理函数
 		this.space.addCollisionHandler(TagOfSprite.runner,TagOfSprite.hinder,
@@ -99,7 +99,7 @@ var CityScene=cc.Scene.extend({
 		this._super();
 		//获取控制器
 		this.controller=Controller.getNewInstance();
-		this.controller.initStatus(10, 100000, 10);
+		this.controller.initStatus(10, 30000, 10);
 		//初始化全局变量
 		Global.initGlobals();
 		//初始化物理引擎
