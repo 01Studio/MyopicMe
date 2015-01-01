@@ -7,6 +7,7 @@ var CityScene=cc.Scene.extend({
 	space:null,//游戏空间
 	gameLayer:null,//游戏层
 	controller:null,
+	bulletsToRemove:[],
 	shapesToRemove:[],
 	//初始化物理引擎
 	initPhysics:function(){
@@ -54,6 +55,7 @@ var CityScene=cc.Scene.extend({
 	//激光与障碍
 	collision_xray_hinder:function(arbiter,space){
 		var shapes=arbiter.getShapes();
+		this.bulletsToRemove.push(shapes[0]);
 		this.shapesToRemove.push(shapes[1]);
 	},
 	//激光与敌人
@@ -77,12 +79,18 @@ var CityScene=cc.Scene.extend({
 			else
 				this.gameLayer.setPositionY(0);
 		}
-//		//删除击中的障碍
-//		for(var i=0;i<this.shapesToRemove.length;i++){
-//			var shape=this.shapesToRemove[i];
-//			this.controller.BackgroundLayer.removeObjectByShape(shape);
-//		}
-//		this.shapesToRemove=[];
+		//删除击中的子弹
+		for(var i=0;i<this.bulletsToRemove.length;i++){
+			var shape=this.bulletsToRemove[i];
+			this.controller.AnimationLayer.removeObjectByShape(shape);
+		}
+		this.bulletsToRemove=[];
+		//删除击中的障碍
+		for(var i=0;i<this.shapesToRemove.length;i++){
+			var shape=this.shapesToRemove[i];
+			this.controller.BackgroundLayer.removeObjectByShape(shape);
+		}
+		this.shapesToRemove=[];
 		
 		//计时，到时未击败敌人，游戏结束
 		this.controller.timeNow=eye.width;

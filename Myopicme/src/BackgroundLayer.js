@@ -145,5 +145,15 @@ var BackgroundLayer=cc.Layer.extend({
 			}
 			return false;
 		})(this.objects,mapIndex));
+	},
+	//根据shape移除物体
+	removeObjectByShape:function (shape) {
+	for (var i = 0; i < this.objects.length; i++) {
+		if (this.objects[i].getShape() == shape) {
+			this.objects[i].removeFromParent();
+			this.objects.splice(i, 1);
+			break;
+		}
 	}
+},
 });

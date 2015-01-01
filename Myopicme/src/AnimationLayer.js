@@ -162,6 +162,7 @@ var AnimationLayer=cc.Layer.extend({
 		shape.setCollisionType(TagOfSprite.xray);
 		this.space.addShape(shape);
 		sprite.setBody(body);
+		sprite.shape = shape;
 		//将激光加入子弹数组
 		this.bullets.push(sprite);
 		
@@ -262,8 +263,9 @@ var AnimationLayer=cc.Layer.extend({
 		*/
 		//子弹删除
 //		var maxX=this.getEye().width+cc.director.getWinSize().width-g_startX;
-//		for(var i=0;i<this.bullets.length;i++){
-//			if(this.bullets[i].x>maxX){
+//		for(var i=0;i<this.bullets.length;i++)
+//			for(var j=0;j<this.bulletsToRemove.length;j++){
+//			if(this.bullets[i] == this.bulletsToRemove[j]){
 //				this.bullets[i].removeFromParent();
 //				this.bullets.splice(i,1);
 //			}
@@ -311,5 +313,33 @@ var AnimationLayer=cc.Layer.extend({
 		this.stat=RunnerStat.running;
 		this.sprite.stopAllActions();
 		this.sprite.runAction(this.runningAction);
-	}
+	},
+	//通过shape移除子弹
+	removeObjectByShape:function (shape) {
+		//利用Array对象的两个方法slice、concat来自定义删除数组的方法
+		Array.prototype.del=function(n) {//n表示第几项，从0开始算起。
+			//prototype为对象原型，注意这里为对象增加自定义方法的方法。
+			if(n<0)//如果n<0，则不进行任何操作。
+				return this;
+			else
+				return this.slice(0,n).concat(this.slice(n+1,this.length));
+			//concat方法：返回一个新数组，这个新数组是由两个或更多数组组合而成的。
+			//　　　　　　这里就是返回this.slice(0,n)/this.slice(n+1,this.length)
+			//　　　　　组成的新数组，这中间，刚好少了第n项。
+			//slice方法： 返回一个数组的一段，两个参数，分别指定开始和结束的位置。
+
+
+		}
+		for (var i = 0; i < this.bullets.length; i++) {
+			cc.log(this.bullets[i].shape + "------" + shape);
+			if (this.bullets[i].shape == shape) {
+				this.space.removeShape(shape);
+				this.bullets[i].removeFromParent();
+				//this.bullets.del(i);
+
+				this.bullets.splice(i, 1);
+				break;
+			}
+		}
+	},
 });
