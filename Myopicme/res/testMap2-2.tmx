@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-down" width="1" height="1" tilewidth="960" tileheight="640">
+ <tileset firstgid="1" name="cityBackground" tilewidth="960" tileheight="640">
+  <image source="cityBackground.png" width="960" height="640"/>
+ </tileset>
+ <layer name="background" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgAAAACAAC
+  </data>
+ </layer>
+ <objectgroup name="object">
+  <object name="#rock.png" x="139" y="276"/>
+ </objectgroup>
+ <objectgroup name="repair">
+  <object x="339" y="166"/>
+ </objectgroup>
+</map>

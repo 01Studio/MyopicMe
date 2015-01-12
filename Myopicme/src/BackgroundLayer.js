@@ -1,8 +1,8 @@
-/*
+/**
  * 游戏背景层
- * 
+ * @param {Space} space
+ * @param {Number} tagOfScene
  */
-
 var BackgroundLayer=cc.Layer.extend({
 	controller:null,
 	
@@ -11,30 +11,29 @@ var BackgroundLayer=cc.Layer.extend({
 	mapSize:null,
 
 	closedMapKey:[],//不可随机地图
-	openMapKey:[],	//可随机地图
 	closedMap:[],
+	openMapKey:[],	//可随机地图
+	openMap:[],
 	objects:[],
-	maxOfClosed:5,
+	maxOfClosed:2,
+	tagOfScene:0,//标记哪类地图
 	
-	ctor:function(space){
+	ctor:function(space,tagOfScene){
 		this._super();
 		this.space=space;
+		this.tagOfScene=tagOfScene;
 		this.init();
 		cc.log("backgroundLayer inited");
 	},
-	onExit:function(){
-		this._super();
-	},
-
+	
 	init:function(){
 		this.controller=Controller.getInstance();
 		//载入第一张地图
-		var beginMap=new cc.TMXTiledMap(res.beginMap);
-		//添加地图
+		var beginMap=new cc.TMXTiledMap(res.beginMap.find(this.tagOfScene));
 		this.addChild(beginMap);
 		this.closedMapKey.push("beginMap");
 		this.closedMap.push(beginMap);
-		this.controller.addToBlurList(beginMap.children[0]);
+		
 		//获取每个地图的大小
 		this.mapSize=cc.size(beginMap.getContentSize().width,beginMap.getContentSize().height);
 		
@@ -42,13 +41,12 @@ var BackgroundLayer=cc.Layer.extend({
 		this.spriteSheet=new cc.SpriteBatchNode(res.objects_png);
 		this.addChild(this.spriteSheet,1);
 		
-		this.closedMapKey=[],//不可随机地图
-		this.closedMap=[],
-		this.objects=[],
-		this.openMapKey=map_Resources.concat();//数组拷贝
-		
-		//加入模糊队列
-		this.controller.addToBlurList(this.spriteSheet);
+		this.closedMapKey=[];//不可随机地图
+		this.closedMap=[];
+		this.objects=[];
+		//根据不同场景更换地图
+		this.openMapKey=res.map_Resource.find(this.tagOfScene).concat();//复制一份
+		this.openMap=tileMapsOfCity;
 		
 		this.scheduleUpdate();
 	},
@@ -71,13 +69,9 @@ var BackgroundLayer=cc.Layer.extend({
 		map.setPosition(this.mapSize.width*(newMapIndex+1),0);
 		this.addChild(map,0);
 		
-		//加入模糊队列
-		this.controller.addToBlurList(map.children[0]);
-		
 		this.loadObjects(map, newMapIndex+1);
 		this.mapIndex=newMapIndex;
 		this.removeObjects(newMapIndex-1);
-				
 		return true;
 	},
 	//随机地图
@@ -86,13 +80,10 @@ var BackgroundLayer=cc.Layer.extend({
 		var lengthOfMaps=this.openMapKey.length;
 		var num=parseInt(Math.random()*lengthOfMaps);
 		var mapKey=this.openMapKey[num];
-		var map=new cc.TMXTiledMap(tileMapsOfCity[mapKey]);
+		var map=new cc.TMXTiledMap(this.openMap[mapKey]);
 		this.openMapKey.splice(num,1);	//从openMapKey中删除一个选定的Map
 		this.closedMapKey.push(mapKey);
 		this.closedMap.push(map);	//添加到closedMap中
-//		if(lengthOfMaps/2<this.maxOfClosed)
-//			lengthOfMaps=lengthOfMaps/2;
-//		this.closedMap.push(map);	//添加地图到closedMap
 		if(this.closedMapKey.length>this.maxOfClosed){
 			this.openMapKey.push(this.closedMapKey[0]);
 			this.closedMapKey.splice(0, 1);

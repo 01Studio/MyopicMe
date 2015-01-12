@@ -44,6 +44,16 @@ var ForegroundLayer=cc.Layer.extend({
 		timeIcon.setPosition(250+glassIcon.getContentSize().width+timeIcon.getContentSize().width/2, winSize.height-100);
 		this.addChild(timeIcon,1);
 		this.controller.setTimeIcon(timeIcon);
+		
+		//分数值
+		var scoreIcon = new cc.LabelAtlas("0", "res/fonts/tuffy_bold_italic-charmap.plist");
+		this.controller.setScoreIcon(scoreIcon);
+		this.controller.setBaseScore(0);
+		this.addChild(scoreIcon, 1);
+		scoreIcon.x = 10;
+		scoreIcon.y = 100;
+		scoreIcon.opacity = 200;
+		
 	},
 	
 	onFire:function(sender){

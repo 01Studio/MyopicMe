@@ -13,6 +13,8 @@ var EnemyLayer=cc.Layer.extend({
 	shape:null,
 	blood:null,
 	
+	high:100,
+	
 	ctor:function(space){
 		this._super();
 		this.space=space;
@@ -32,9 +34,9 @@ var EnemyLayer=cc.Layer.extend({
 		var contentSize=this.sprite.getContentSize();
 		//cp.Body(质量,cp.momentForBox(转动惯量,宽,高)); Infinity无限大，使人物无法旋转
 		this.body=new cp.Body(1,cp.momentForBox(Infinity, contentSize.width, contentSize.height));
-		this.body.p=cc.p(winSize.width-100,100);
+		this.body.p=cc.p(winSize.width-100,this.high);
 		//添加浮力，使敌人高度不变
-		this.body.applyForce(cp.v(0, -space_grivaty),cp.v(0, 0));
+		this.body.applyForce(cp.v(0, -space_gravity),cp.v(0, 0));
 		//添加冲量
 		//applyImpulse(cp.v(x轴冲力,y轴冲力),cp.v(角加速度,弹力));
 		this.body.applyImpulse(cp.v(start_speed, 0),cp.v(0, 0));
@@ -54,16 +56,13 @@ var EnemyLayer=cc.Layer.extend({
 		this.spriteSheet.addChild(this.blood);
 		this.controller.setBossIcon(this.blood);
 		
-		//加入模糊队列
-		this.controller.addToBlurList(this.spriteSheet);
-		
 		this.scheduleUpdate();
 		
 	},
 	update:function(){
 		var animationLayer=this.getParent().getChildByTag(TagOfLayer.Animation);
 		//使Enemy位置固定
-		this.body.p=cc.p(animationLayer.getEye().width+cc.director.getWinSize().width-100-g_startX,400);
+		this.body.p=cc.p(animationLayer.getEye().width+cc.director.getWinSize().width-100-g_startX,this.high);
 		var pos=cc.p(this.sprite.getPositionX(),this.sprite.getPositionY()+this.sprite.getContentSize().height/2+this.blood.getContentSize().height);
 		this.blood.setPosition(pos);
 	},
@@ -76,6 +75,14 @@ var EnemyLayer=cc.Layer.extend({
 	//enemy被攻击后改变位置
 	//TODO
 	changePlace:function(){
+		var high=Math.random()*g_topHeight;
+		if(high<g_groundHeight){
+			high=g_groundHeight;
+		}
+		else if((high+this.sprite.getContentSize().height)>g_topHeight){
+			high=g_topHeight-this.sprite.getContentSize().height;
+		}
+		this.high=high;
 	},
 	//用于从游戏中删除
 	removeFromParent:function(){

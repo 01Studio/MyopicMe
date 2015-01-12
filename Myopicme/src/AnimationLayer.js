@@ -5,6 +5,7 @@
 
 var AnimationLayer=cc.Layer.extend({
 	controller:null,
+	eventListener:null,
 	
 	sprite:null,
 	body:null,
@@ -16,7 +17,6 @@ var AnimationLayer=cc.Layer.extend({
 	jumpUpAction:null,
 	jumpDownAction:null,
 	stat:0,
-	hinders:[],
 	bullets:[],
 	recognizer:null,
 	//创建
@@ -26,8 +26,8 @@ var AnimationLayer=cc.Layer.extend({
 		this.init();
 		this.initAction();
 		//debug使用
-		this._debugNode=new cc.PhysicsDebugNode(this.space);
-		this.addChild(this._debugNode, 10);
+//		this._debugNode=new cc.PhysicsDebugNode(this.space);
+//		this.addChild(this._debugNode, 10);
 		cc.log("animationLayer inited");
 	},
 	onExit:function(){
@@ -41,6 +41,8 @@ var AnimationLayer=cc.Layer.extend({
 	//动作初始化
 	init:function(){
 		this.controller=Controller.getInstance();
+
+		this.bullets=[];
 		//载入人物动作缓存
 		cc.spriteFrameCache.addSpriteFrames(res.running_plist);
 		this.spriteSheetRunner=new cc.SpriteBatchNode(res.running_png);
@@ -63,7 +65,7 @@ var AnimationLayer=cc.Layer.extend({
 		this.sprite.setBody(this.body);
 		
 		//设置监听
-		cc.eventManager.addListener({
+		this.eventListener=cc.eventManager.addListener({
 			event:cc.EventListener.TOUCH_ONE_BY_ONE,
 			swallowTouches:true,
 			onTouchBegan:this.onTouchBegan,
@@ -77,11 +79,7 @@ var AnimationLayer=cc.Layer.extend({
 		this.addChild(this.spriteSheetBullet);
 		
 		this.recognizer=new SimpleRecognizer();
-		
-		//加入模糊队列
-		this.controller.addToBlurList(this.spriteSheetRunner);
-		this.controller.addToBlurList(this.spriteSheetBullet);
-		
+				
 		this.scheduleUpdate();
 	},
 	
@@ -151,7 +149,7 @@ var AnimationLayer=cc.Layer.extend({
 		var body=new cp.Body(1,cp.momentForBox(1, contentSize.width, contentSize.height));
 		body.p=cc.p(this.sprite.getPositionX(), this.sprite.getPositionY());
 		//添加浮力
-		body.applyForce(cp.v(0, -space_grivaty),cp.v(0, 0));
+		body.applyForce(cp.v(0, -space_gravity),cp.v(0, 0));
 		//添加子弹初始冲量
 		body.applyImpulse(cp.v(650, 0),cp.v(0, 0));
 		this.space.addBody(body);
@@ -205,71 +203,15 @@ var AnimationLayer=cc.Layer.extend({
 			this.body.setVel(vel);
 			//cc.log("vel.x="+this.body.getVel().x);
 		}
-		//TODO 在cityScene物理引擎初始化部分完成
-		/*
-		
-		//利用Array对象的两个方法slice、concat来自定义删除数组的方法
-		Array.prototype.del=function(n) {//n表示第几项，从0开始算起。
-			//prototype为对象原型，注意这里为对象增加自定义方法的方法。
-			if(n<0)//如果n<0，则不进行任何操作。
-				return this;
-			else
-				return this.slice(0,n).concat(this.slice(n+1,this.length));
-			　　　//concat方法：返回一个新数组，这个新数组是由两个或更多数组组合而成的。
-			　　　//　　　　　　这里就是返回this.slice(0,n)/this.slice(n+1,this.length)
-			　　 　//　　　　　组成的新数组，这中间，刚好少了第n项。
-			　　　//slice方法： 返回一个数组的一段，两个参数，分别指定开始和结束的位置。
-		
-		
-		}
-		//判断子弹碰撞
-		var i=0,//当前子弹在数组中的位置
-			j=0,//当前障碍物在数组中的位置
-			l1=0,//子弹数组长度
-			l2=0;//障碍物数组长度
-		cc.log('HIHIHIHIHIHIHIHIHI');
-		this.hinders = this.getParent().getParent().gameLayer.getChildByTag(TagOfLayer.Background).hinders;
-		l1 = this.bullets.length;
-		l2 = this.hinders.length;
-		for(i = 0;i < l1;i++){
-			for(j = 0;j < l2;j++){
-				if(this.hinders[j].getSprite() == null)
-					continue;
-				bulletX = this.bullets[i].getPositionX();
-				bulletY = this.bullets[i].getPositionY();
-				bulletW = this.bullets[i].getContentSize().width;
-				bulletH = this.bullets[i].getContentSize().height;
-				objX = this.hinders[j].getSprite().getPositionX();
-				objY = this.hinders[j].getSprite().getPositionY();
-				objW = this.hinders[j].getSprite().getContentSize().width;
-				objH = this.hinders[j].getSprite().getContentSize().height;
-
-				cc.log('objY:'+objY+',bulletY:'+bulletY+',objH/2:'+(objH/2)+',objY - bulletY:'+Math.abs(objY - bulletY));
-				cc.log('objX:'+objX+',bulletX:'+bulletX+',bulletW/2:'+(bulletW/2)+',objW/2:'+objW/2+',objX - bulletX:'+Math.abs(objX - bulletX - bulletW/2));
-
-				if(Math.abs(objY - bulletY) <= (objH) && Math.abs(objX - bulletX - bulletW/2) <= (objW)){
-					cc.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-					this.hinders[j].getSprite().removeFromParent();
-					this.bullets[i].removeFromParent();
-					this.hinders.del(j);
-					this.bullets.del(i);
-					--j;
-					--i;
-					break;
-				}
+		//删除超出屏幕的子弹
+		for (var i = 0; i < this.bullets.length; i++) {
+			if (this.bullets[i].getPositionX()-this.sprite.getPositionX()>cc.director.getWinSize().width) {
+				this.space.removeShape(this.bullets[i].shape);
+				this.bullets[i].removeFromParent();
+				this.bullets.splice(i, 1);
 			}
 		}
 		
-		*/
-		//子弹删除
-//		var maxX=this.getEye().width+cc.director.getWinSize().width-g_startX;
-//		for(var i=0;i<this.bullets.length;i++)
-//			for(var j=0;j<this.bulletsToRemove.length;j++){
-//			if(this.bullets[i] == this.bulletsToRemove[j]){
-//				this.bullets[i].removeFromParent();
-//				this.bullets.splice(i,1);
-//			}
-//		}
 	},
 	//跟踪人物
 	getEye:function(){
@@ -317,19 +259,19 @@ var AnimationLayer=cc.Layer.extend({
 	//通过shape移除子弹
 	removeObjectByShape:function (shape) {
 		//利用Array对象的两个方法slice、concat来自定义删除数组的方法
-		Array.prototype.del=function(n) {//n表示第几项，从0开始算起。
-			//prototype为对象原型，注意这里为对象增加自定义方法的方法。
-			if(n<0)//如果n<0，则不进行任何操作。
-				return this;
-			else
-				return this.slice(0,n).concat(this.slice(n+1,this.length));
-			//concat方法：返回一个新数组，这个新数组是由两个或更多数组组合而成的。
-			//　　　　　　这里就是返回this.slice(0,n)/this.slice(n+1,this.length)
-			//　　　　　组成的新数组，这中间，刚好少了第n项。
-			//slice方法： 返回一个数组的一段，两个参数，分别指定开始和结束的位置。
-
-
-		}
+//		Array.prototype.del=function(n) {//n表示第几项，从0开始算起。
+//			//prototype为对象原型，注意这里为对象增加自定义方法的方法。
+//			if(n<0)//如果n<0，则不进行任何操作。
+//				return this;
+//			else
+//				return this.slice(0,n).concat(this.slice(n+1,this.length));
+//			//concat方法：返回一个新数组，这个新数组是由两个或更多数组组合而成的。
+//			//　　　　　　这里就是返回this.slice(0,n)/this.slice(n+1,this.length)
+//			//　　　　　组成的新数组，这中间，刚好少了第n项。
+//			//slice方法： 返回一个数组的一段，两个参数，分别指定开始和结束的位置。
+//
+//
+//		}
 		for (var i = 0; i < this.bullets.length; i++) {
 			cc.log(this.bullets[i].shape + "------" + shape);
 			if (this.bullets[i].shape == shape) {

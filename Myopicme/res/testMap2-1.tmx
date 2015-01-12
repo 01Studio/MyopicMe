@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-down" width="60" height="20" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="cityBackground" tilewidth="32" tileheight="32">
+  <image source="cityBackground.png" width="960" height="640"/>
+ </tileset>
+ <layer name="background" width="60" height="20">
+  <data encoding="base64" compression="zlib">
+   eJzF11PfkAcAxuHebNu2bdt2y1qr5VpYxpCNMduuZVurFpftZezqUzwH1/H/8P7dIaFChQpNGMISjvBEICKRiEwUohKN6MQgJrGITRziEo/4JCAhiUhMEpKSjOSEBNRNQUpSkZo0pCUd6clARjKRmSxkJRvZyUFOcpGbPOQlH/kpQEEKUZgiFA2wW4zilKAkpShNGcpSjvJUoCKVqEwVqlKN6tSgJrWoTR3qUo/6NKAhjWgcYLcJTWnGVzSnBS1pRWva0JZ2tKcDHfmaTnxDZ7rwLV3pRnd60JNe9KYPfQPsfkc/+jOAgXzPIAYzhKEMYzgjGMkoRvMDP/ITPzOGsYxjPBOYyCQmM4WpAXanMZ0ZzGQWs/mFX/mN3/mDP5nDXOYxnwUsZBGLWcJSlrGcFaxkFatZw9oAu+tYzwY2sonNbGEr2/iL7exgJ7vYzR72so/9HOAghzjMEY5yjOOc4CSnAuye5gxn+ZtznOcC/3CRS1zmCle5xr9c5wY3ucVt7nCXe9znAQ95xGOe8DTA7jOe84KX/McrXvOGt7zjPR/4yCc+82VEQwhNGMISjvBEICKRiEwUohKN6CHBdWMQk1jEJg5xiUd8EpCQRCQmCUlJRnJSkJJUpCYNaUlHejKQkUxkJgtZA+xmIzs5yEkucpOHvOQjPwUoSCEKU4SiFKM4JShJKUpThrKUozwVqEglKgfYrUJVqlGdGtSkFrWpQ13qUZ8GNKQRjWlCU5rxFc1pQUta0Zo2tKUd7ekQYLcjX9OJb+hMF76lK93oTg960ove9KEv39GP/gxgIN8ziMEMYSjDGM4IRgbYHcVofuBHfuJnxjCWcYxnAhOZxGSmMJVpTGcGM5nFbH7hV37jd/7gT+YwN8DuPOazgIUsYjFLWMoylrOClaxiNWtYyzrWs4GNbGIzW9jKNv5iOzvYya4Au7vZw172sZ8DHOQQhznCUY5xnBOc5BSnOcNZ/uYc57nAP1zkEpe5wlWuBdj9l+vc4Ca3uM0d7nKP+zzgIY94zBOe8oznvOAl//GK17zhLe94zwc+8inA7me+HO8QQhOGsIQjPBGISCQiE4WoRCM6MYhJLGITh7jEIz4JSEgiEpOEpKGD6yYjOSlISSpSk4a0pCM9GchIJjKThaxkIzs5yEkucpOHvOQjPwUoSCEKB9gtQlGKUZwSlKQUpSlDWcpRngpUpBKVqUJVqlGdGtSkFrWpQ13qUZ8GNAyw+z9wSiAb
+  </data>
+ </layer>
+ <objectgroup name="object">
+  <object name="#rock.png" x="354" y="352"/>
+ </objectgroup>
+ <objectgroup name="repair">
+  <object x="582" y="146"/>
+ </objectgroup>
+</map>

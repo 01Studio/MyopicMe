@@ -12,20 +12,34 @@
     "external"
   ],
   "jsList": [
+    
+    "src/util.js",
+    "src/Recognizer.js",
+    "src/Filter.js",
+    
+    "src/StorageManager.js",
+    
+    "src/global.js",
+    "src/resource.js",
+    
+    "src/Controller.js",
+    "src/SceneTemplate.js",
+    
+    "src/Hinder.js",
+    "src/Repair.js",
+    
+    "src/WelcomeLayer.js",
+    "src/LevelSelectLayer.js",
     "src/AnimationLayer.js",
     "src/BackgroundLayer.js",
-    "src/CityScene.js",
-    "src/Controller.js",
     "src/EnemyLayer.js",
-    "src/Filter.js",
     "src/ForegroundLayer.js",
     "src/GameOverLayer.js",
-    "src/global.js",
-    "src/Hinder.js",
-    "src/Recognizer.js",
-    "src/Repair.js",
-    "src/resource.js",
-    "src/WelcomeLayer.js",
-    "src/WelcomeScene.js"
+    
+    "src/WelcomeScene.js",
+    "src/LevelSelectScene.js",
+    "src/CityScene.js",
+    "src/CountryScene.js",
+    "src/OutSpaceScene.js"
   ]
 }

@@ -8,16 +8,18 @@ var WelcomeLayer=cc.Layer.extend({
 		this.init();
 	},
 	init:function(){
-		this._super();
+		
 		var winSize=cc.director.getWinSize();
-		var menuFont=new cc.MenuItemFont("CityScene",this.CityScene,null);
+		//CityScene
+		var menuFont=new cc.MenuItemFont("Go",this.LevelSelect,null);
 		var menu=new cc.Menu(menuFont);
 		var centerPos=new cc.p(winSize.width/2,winSize.height/2);
 		menu.setPosition(centerPos);
 		this.addChild(menu);
+		
 	},
 	
-	CityScene:function(){
-		cc.director.runScene(new CityScene());
+	LevelSelect:function(){
+		cc.director.runScene(new LevelSelectScene());
 	}
 });

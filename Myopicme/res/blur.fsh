@@ -8,7 +8,6 @@ varying vec4 v_fragmentColor;
 varying vec2 v_texCoord;
 
 uniform vec2 blurSize;
-uniform vec4 substract;
 
 void main() {
 	vec4 sum = vec4(0.0);
@@ -22,6 +21,6 @@ void main() {
 	sum += texture2D(CC_Texture0, v_texCoord + 0.0003 * blurSize) * 0.09;
 	sum += texture2D(CC_Texture0, v_texCoord + 0.0004 * blurSize) * 0.05;
 
-	gl_FragColor = (sum - substract) * v_fragmentColor;
+	gl_FragColor = sum * v_fragmentColor;
 }
 

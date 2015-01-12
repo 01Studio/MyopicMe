@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-down" width="60" height="20" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="cityBackground" tilewidth="32" tileheight="32">
+  <image source="cityBackground.png" width="960" height="640"/>
+ </tileset>
+ <layer name="background" width="60" height="20">
+  <data encoding="base64" compression="zlib">
+   eJzF12Ww1FUYwOF76e7u7u7u7g5FBRUEBVSkTFBBwaCxBQUFkwYVLMIACZVQWjCQTiUVH2aOM+vK9/+Zeea875md+c3O/XBnExMSEpKQlGQkJwUpSUVq0pCWdKQnAxnJRGaykJVsZCcHOclFbvKQl3zkpwCJEXULUojCFKEoxShOCUpSitKUoSzlKE8FKlKJylShKtWoTg1qUova1KEu9SLs1qcBDWlEY5rQlGY0pwUtaUVr2tCWdrSnAx3pRGe60JVudKcHPelFb26IsHsjfbgp4b+nX8L/z4BwD2RQmO+6zufuuc7btTMybu8T7pu5hb5hv5XbuJ3+oXtHTPfO0B3MEIZyd+jeyzDuYzgjQncUo7mfB3gwtB7mEcaE/VEeC/O4cD/Bk2GeGO6neSbMk5jMlLBPYzozYr7rv93rnbEx3cdDd3xMd0LoPhXTfTauOzWuO5PneJ4XeDG0XuYVXg37bF4L85xwv8GbYZ4f7rd5J8zv8T4Lwr6IxSwJ+7K47kvh/d/urJju66E7N6Y7L3Tfium+G9ddGNddGrrLWcEHCf89qxL+fz6/ztsX4f6Kr8O8gW/YGPbNbOHbsH8f1/0wvK8M3Y/5hE/5LHRXs4a1rAvdL2O66+O6m+K634XuVraxnR38wI/sZBe72cNe9rGfnzjAQX7mF37lNw7xO4c5wlGOcZwTnORUhN3TnOEs5/iDPznPBS5yictc4S/+5uq1P4h/ookkISnJSE4KUpKK1KQhLelIT4bE6LoZyURmspCVbGQnBznJRW7ykJd85KcABSlEYYpQlGIUpwQlKUVpylCWchF2y1OBilSiMlWoSjWqU4Oa1KI2dahLPerTgIY0ojFNaEozmtOClrSiNW0i7LalHe3pQEc60ZkudKUb3elBT3rRmxu4kT7cxM3cQl/6cSu3cTv9GcAdDIywO4g7uYvBDGEod3MP9zKM+xjOCEYyitHczwM8yEM8zCOMYSyP8hiPM47xPBFh90kmMJGneJpneJZJTGYKU5nGdGYwk+d4nhd4kZd4mVd4lVnM5jVeZw5zeSPC7pvMYz5v8Tbv8C7v8T4LWMgiFrOEpSxjOSv4gA/5iJWs4mM+4VM+43NWsybC7lrW8QVf8hVfs54NfMNGNrGZLXzLd3zPVraxnR38wI/sZBe72cNe9rGfnyLsHuAgP/MLv/Ibh/idwxzhKMc4zglOcorTnOEs5/iDPznPBS5yictc4S/+jrB7lWs/vBNJQlKSkZwUpCQVqUlDWtKRngxkJBOZyUJWspGdHOQkF7nJQ17yJYmum58CFKQQhSlCUYpRnBKUpBSlKUNZylGeClSkEpWpQlWqUZ0a1KQWtakTYbcu9ahPAxrSiMY0oSnNaE4LWtKK1rShLe1oTwc60onOdKEr3ehOD3rSK8LuPwod/EA=
+  </data>
+ </layer>
+ <objectgroup name="object">
+  <object name="#rock.png" x="354" y="352"/>
+  <object name="#rock.png" x="888.667" y="408"/>
+  <object name="#rabish.png" x="750.333" y="330.333"/>
+ </objectgroup>
+ <objectgroup name="repair">
+  <object x="582" y="146"/>
+ </objectgroup>
+</map>
