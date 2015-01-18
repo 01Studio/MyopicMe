@@ -3,90 +3,77 @@
  */
 
 var Controller=cc.Class.extend({
-
 	//创建控制中心，各个Layer层
 	AnimationLayer:null,
 	BackgroundLayer:null,
 	EnemyLayer:null,
 	ForegroundLayer:null,
 	GameLayer:null,
+	GameOverLayer:null,
+	//游戏场景
 	GameScene:null,
 	
-	GameOverLayer:null,
-	
-	//状态记录：英雄状态，眼镜状态，时间状态，Boss生命值
 	//英雄状态
-	heroIcon:null,
+	heroIcon:null,//卖萌，显示眼镜种类
 	//眼镜状态
 	glassIcon:null,
-	glassAll:0,
-	glassNow:0,
+	glassAll:null,
+	glassNow:null,
 	//时间状态
 	timeIcon:null,
-	timeAll:0,
-	timeNow:0,
-	//Boss生命值
-	bossIcon:null,
-	bossAll:0,
-	bossNow:0,
+	timeAll:null,
+	timeNow:null,
 	//分数值
 	scoreIcon:null,
-	baseScore:0,
-	score:0,
-	
+	scoreAddIcon:null,
+	baseScore:null,
+	score:null,
 	//其他
 	fireIcon:null,
-	//关卡
-	level:5,
 	//滤镜
 	filter:null,
+	//添加的reward
+	rewards:[],
+	//
+	level:null,
+	attack:null,
 	
 	ctor:function(){
 		this.init();
 	},
 	init:function(){
-		this.level=5;
+		this.baseScore=0;
 		this.filter=new Filter();
 	},
-
 	//暂停与继续
 	pause:function(){
 		this.GameScene.unscheduleAllCallbacks();
-		this.AnimationLayer.unscheduleAllCallbacks();
-		this.BackgroundLayer.unscheduleAllCallbacks();
-		this.EnemyLayer.unscheduleAllCallbacks();
+		cc.eventManager.pauseTarget(this.AnimationLayer, false);
+		this.AnimationLayer.sprite.pause();
+		this.EnemyLayer.sprite.pause();
 		this.fireIcon.setEnabled(false);
-		this.GameOverLayer=new GameOverLayer();
-		this.GameScene.addChild(this.GameOverLayer);
 	},
 	resume:function(){
-		//TODO 不完善 用于完成本关任务后开启无限模式
 		this.GameScene.scheduleUpdate();
-		this.AnimationLayer.scheduleUpdate();
-		this.BackgroundLayer.scheduleUpdate();
-		this.EnemyLayer.scheduleUpdate();
+		cc.eventManager.resumeTarget(this.AnimationLayer, false);
+		this.AnimationLayer.sprite.resume();
+		this.EnemyLayer.sprite.resume();
 		this.fireIcon.setEnabled(true);
-		this.GameScene.removeChild(this.GameOverLayer);
 	},
 	/**
 	 * 初始化游戏状态
 	 * @param {Number} glass
 	 * @param {Number} time
-	 * @param {Number} boss
+	 * @param {Number} level
+	 * @param {Number} attack
 	 */
-	initStatus:function(glass,time,boss){
+	initStatus:function(glass,time,level,attack){
 		this.glassAll=glass;
 		this.glassNow=this.glassAll;
 		this.timeAll=time;
 		this.timeNow=this.timeAll;
-		this.bossAll=boss;
-		this.bossNow=this.bossAll;
-		if(this.glassIcon){//非重新进入
-			this.glassIcon.setScaleX(1);
-			this.timeIcon.setScaleX(1);
-			this.bossIcon.setScaleX(1);
-			this.filter.setBlurSize((this.glassAll-this.glassNow)*10);
-		}
+		this.level=level;
+		this.attack=attack;
 	},
 	//设置图标
 	setHeroIcon:function(icon){
@@ -98,47 +85,40 @@ var Controller=cc.Class.extend({
 	setTimeIcon:function(icon){
 		this.timeIcon=icon;
 	},
-	setBossIcon:function(icon){
-		this.bossIcon=icon;
-	},
 	setScoreIcon:function(icon){
 		this.scoreIcon=icon;
 	},
+	setScoreAddIcon:function(icon){
+		this.scoreAddIcon=icon;
+	},
 	setFireIcon:function(icon){
 		this.fireIcon=icon;
-	},
-	/**
-	 * 基础分数	总分=距离分+基础分
-	 */
-	setBaseScore:function(score){
-		this.baseScore=score;
 	},
 	/**
 	 * 加分
 	 */
 	addBaseScore:function(score){
 		this.baseScore+=score;
+		this.scoreAddIcon.setString("+"+score);
+		this.scoreAddIcon.setVisible(true);
+		this.scoreAddIcon.runAction(cc.sequence(cc.fadeIn(0.01),cc.fadeOut(0.5)));
 	},
 	
 	/**
 	 * 主角开火
 	 */
 	fire:function(){
-		this.AnimationLayer.fire();
-		this.damaged();
-	},
-	//对眼镜造成伤害
-	damaged:function(){
-		this.glassNow--;
-		if(this.glassNow==0){
-			this.askForGameOver();
-		}
-		this.glassIcon.setScaleX(this.glassNow/this.glassAll);
-		if(this.filter){
+		if(this.glassNow>0){
+			this.glassNow--;
+			this.glassIcon.setScaleX(this.glassNow/this.glassAll);
 			this.filter.setBlurSize((this.glassAll-this.glassNow)*10);
+			this.AnimationLayer.fire();
+			//audioEngine.playEffect(res.xrayEffect, false);
 		}
 	},
-	//修复
+	/**
+	 * 修复
+	 */
 	repair:function(){
 		if(this.glassNow<this.glassAll){
 			this.glassNow++;
@@ -150,13 +130,33 @@ var Controller=cc.Class.extend({
 	 * 击中Boss
 	 */
 	hitBoss:function(){
-		if(this.bossNow>0){
-			this.bossNow--;
-			this.bossIcon.setScaleX(this.bossNow/this.bossAll);
-			//杀死boss
-			if(this.bossNow==0){
-				this.askForNext();
-			}
+		//TODO 击中boss，延缓boss逃跑时间
+		this.timeNow+=this.attack;
+		if(this.timeNow>this.timeAll){
+			this.timeNow=this.timeAll;
+		}
+		this.EnemyLayer.postHited();
+	},
+	/**
+	 * 掉落装备
+	 * @param pos
+	 * @param type
+	 * @param odds
+	 */
+	leftEquipment:function(pos){
+		var random=Math.random();
+		var odds=0.6;
+		if(random<odds){//60%机会
+			var rewardAttr={};
+			rewardAttr.pos=pos;
+			rewardAttr.type=TagOfSprite.repair;
+			this.rewards.push(rewardAttr);
+		}
+		else if(random<(odds+1)/2){//20%
+			var rewardAttr={};
+			rewardAttr.pos=pos;
+			rewardAttr.type=TagOfSprite.glass;
+			this.rewards.push(rewardAttr);
 		}
 	},
 	/**
@@ -165,45 +165,46 @@ var Controller=cc.Class.extend({
 	 * @param distance
 	 */
 	update:function(distance){
+		//分数
 		this.timeIcon.setScaleX(this.timeNow/this.timeAll);
-		this.score=this.baseScore+distance;//分数
+		this.score=this.baseScore+distance;
 		this.scoreIcon.setString(this.score);
+		//rewards实现
+		while(this.rewards.length>0){
+			var rewardAttr=this.rewards.pop();
+			var pos=rewardAttr.pos;
+			var type=rewardAttr.type;
+			var name=null;
+			if(type==TagOfSprite.glass){
+				name=GlassMaps.find(this.GameScene.tagOfScene).find("name");
+			}
+			else{
+				name="#repair.png";
+			}
+			var backgroundLayer=this.BackgroundLayer;
+			var reward=new Reward(backgroundLayer.spriteSheet,
+					backgroundLayer.space,
+					pos,
+					name);
+			reward._mapIndex=backgroundLayer.mapIndex+1;//当前mapIndex+1，防止被误删
+			backgroundLayer.objects.push(reward);
+		}
+		//渲染
 		if(this.filter){
 			this.filter.update();
-		}
-	},
-	//下一关
-	askForNext:function(){
-		this.level--;
-		if(this.level!=0){
-			this.initStatus(this.glassAll, this.timeAll, this.bossAll);
-			this.EnemyLayer.changePlace();
-		}
-		else{
-			this.askForGameOver();
 		}
 	},
 	/**
 	 * 游戏结束
 	 */
-	askForGameOver:function(key){
+	askForGameOver:function(tagOfGameOver){
 		
 		this.pause();
-		
-		switch(key){//不同的结束情况
-			case TagOfGameOver.win:
-				break;
-			case TagOfGameOver.hit:
-				break;
-			case TagOfGameOver.timeOver:
-				break;
-			case TagOfGameOver.glassBroken:
-				break;
+
+		if(!this.GameOverLayer){
+			this.GameOverLayer=new GameOverLayer(tagOfGameOver);
+			this.GameScene.addChild(this.GameOverLayer);
 		}
-		//数据存储
-		var manager=new StorageManager();
-		manager.updateHighestScore(this.GameScene.tagOfScene, this.score);
-		this.filter.destory();
 	}
 	
 });

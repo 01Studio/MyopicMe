@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-down" width="2" height="1" tilewidth="960" tileheight="640">
+ <tileset firstgid="1" name="cityBackground" tilewidth="960" tileheight="640">
+  <image source="cityBackground.png" width="960" height="640"/>
+ </tileset>
+ <layer name="background" width="2" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgYARiAAAUAAM=
+  </data>
+ </layer>
+ <objectgroup name="hinder"/>
+ <objectgroup name="reward">
+  <object name="#repair.png" x="327.273" y="533.333" width="32" height="32"/>
+  <object name="#repair.png" x="444.606" y="429.455" width="32" height="32"/>
+  <object name="#repair.png" x="584" y="347.636" width="32" height="32"/>
+  <object name="#repair.png" x="656.727" y="235.515" width="32" height="32"/>
+  <object name="#repair.png" x="762.788" y="87.0303" width="32" height="32"/>
+  <object name="#repair.png" x="956.727" y="299.152" width="32" height="32"/>
+  <object name="#repair.png" x="1165.82" y="477.939" width="32" height="32"/>
+  <object name="#repair.png" x="1565.82" y="541.576" width="32" height="32"/>
+  <object name="#repair.png" x="1353.7" y="550.667" width="32" height="32"/>
+ </objectgroup>
+</map>

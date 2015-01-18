@@ -32,7 +32,8 @@ Filter.prototype = {
 			this.sprite.setFlippedY(true);
 				
 			if(cc.sys.isNative){
-				this.shader = new cc.GLProgram("res/blur.vsh", "res/blur.fsh");
+				this.shader = new cc.GLProgram(res.blur_vsh, res.blur_fsh);
+				this.shader.retain();
 				this.shader.link();
 				this.shader.updateUniforms();
 				this.glProgram_state = cc.GLProgramState.getOrCreateWithGLProgram(this.shader);
@@ -40,24 +41,31 @@ Filter.prototype = {
 				this.sprite.setGLProgramState(this.glProgram_state);
 			}	
 			else{//!cc.sys.isNative 未测试
-				this.shader = new cc.GLProgram("res/blur_mv.vsh", "res/blur.fsh");
+				this.shader = new cc.GLProgram(res.blur_mv_vsh, res.blur_mv_fsh);
+				this.shader.retain();
 				this.shader.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
 				this.shader.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
 				this.shader.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
 				this.shader.link();
-				this.shader.updateUniforms();
 				this.shader.use();
+				this.shader.setUniformsForBuiltins();
 				this.shader.setUniformLocationWith2f(this.shader.getUniformLocationForName('blurSize'), 0, 0);
+				this.shader.updateUniforms();
 				this.sprite.shaderProgram = this.shader;
 			}
 		},
-		setBlurSize:function(blurSize){
+
+		//在fsh中加入0.0001的参数调整，范围为0-10000,在0-100时效果较好
+		setBlurSize:function(_blurSize){
 			if(cc.sys.isNative){
-				this.glProgram_state.setUniformVec2("blurSize", {x: blurSize, y: blurSize});
+				this.glProgram_state.setUniformVec2("blurSize", {x: _blurSize, y: _blurSize});
 			}	
 			else{//!cc.sys.isNative 未测试
+				this.shader.use();
+				this.shader.setUniformsForBuiltins();
+				var blurSize = this.shader.getUniformLocationForName("blurSize");
+				gl.uniform2f(blurSize, _blurSize, _blurSize);
 				this.shader.updateUniforms();
-				this.shader.setUniformLocationWith2f(this.shader.getUniformLocationForName('blurSize'), blurSize, blurSize);
 			}	
 		},
 		/*
@@ -75,5 +83,6 @@ Filter.prototype = {
 		},
 		destory:function(){
 			this.controller.ForegroundLayer.removeChild(this.sprite);
+			this.added=false;
 		}
 };

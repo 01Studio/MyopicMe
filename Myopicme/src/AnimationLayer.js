@@ -5,7 +5,6 @@
 
 var AnimationLayer=cc.Layer.extend({
 	controller:null,
-	eventListener:null,
 	
 	sprite:null,
 	body:null,
@@ -26,8 +25,8 @@ var AnimationLayer=cc.Layer.extend({
 		this.init();
 		this.initAction();
 		//debug使用
-//		this._debugNode=new cc.PhysicsDebugNode(this.space);
-//		this.addChild(this._debugNode, 10);
+		this._debugNode=new cc.PhysicsDebugNode(this.space);
+		this.addChild(this._debugNode, 10);
 		cc.log("animationLayer inited");
 	},
 	onExit:function(){
@@ -63,23 +62,21 @@ var AnimationLayer=cc.Layer.extend({
 		this.shape.setCollisionType(TagOfSprite.runner);
 		this.space.addShape(this.shape);
 		this.sprite.setBody(this.body);
-		
 		//设置监听
-		this.eventListener=cc.eventManager.addListener({
+		cc.eventManager.addListener({
 			event:cc.EventListener.TOUCH_ONE_BY_ONE,
 			swallowTouches:true,
 			onTouchBegan:this.onTouchBegan,
 			onTouchMoved:this.onTouchMoved,
 			onTouchEnded:this.onTouchEnded
 		}, this);
-		
 
 		cc.spriteFrameCache.addSpriteFrames(res.objects_plist);
 		this.spriteSheetBullet=new cc.SpriteBatchNode(res.objects_png);
 		this.addChild(this.spriteSheetBullet);
 		
 		this.recognizer=new SimpleRecognizer();
-				
+		
 		this.scheduleUpdate();
 	},
 	
@@ -151,7 +148,7 @@ var AnimationLayer=cc.Layer.extend({
 		//添加浮力
 		body.applyForce(cp.v(0, -space_gravity),cp.v(0, 0));
 		//添加子弹初始冲量
-		body.applyImpulse(cp.v(650, 0),cp.v(0, 0));
+		body.applyImpulse(cp.v(bullet_speed, 0),cp.v(0, 0));
 		this.space.addBody(body);
 		this.spriteSheetBullet.addChild(sprite);
 		var shape=new cp.BoxShape(body,contentSize.width,contentSize.height);
@@ -177,9 +174,10 @@ var AnimationLayer=cc.Layer.extend({
 		
 		//设置最大速度
 		var vel=this.body.getVel();
-		//当人物速度小于100时（即人物碰撞），游戏结束
-		if(vel.x<100){
-			this.controller.askForGameOver();
+		//当人物速度小于10时（即人物碰撞），游戏结束
+		if(vel.x<10 && !cc.director.isPaused()){
+			cc.log("gamevoe");
+			this.controller.askForGameOver(TagOfGameOver.hit);
 		}
 		//下降动作
 		if(this.stat==RunnerStat.jumpUp){

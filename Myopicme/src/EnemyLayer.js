@@ -2,7 +2,6 @@
  * 游戏敌人初始化
  * 
  */
-
 var EnemyLayer=cc.Layer.extend({
 	controller:null,
 	
@@ -11,9 +10,9 @@ var EnemyLayer=cc.Layer.extend({
 	spriteSheet:null,
 	body:null,
 	shape:null,
-	blood:null,
 	
 	high:100,
+	_reward:0,
 	
 	ctor:function(space){
 		this._super();
@@ -25,8 +24,8 @@ var EnemyLayer=cc.Layer.extend({
 		this.controller=Controller.getInstance();
 		//加载图形
 		var winSize=cc.director.getWinSize();
-		cc.spriteFrameCache.addSpriteFrames("res/alien.plist");
-		this.spriteSheet=new cc.SpriteBatchNode("res/alien.png");
+		cc.spriteFrameCache.addSpriteFrames(res.alien_plist);
+		this.spriteSheet=new cc.SpriteBatchNode(res.alien_png);
 		this.addChild(this.spriteSheet);
 		
 		//添加物理绑定
@@ -48,33 +47,24 @@ var EnemyLayer=cc.Layer.extend({
 		this.shape.setSensor(true);
 		this.space.addShape(this.shape);
 		this.sprite.setBody(this.body);
-		
-		//敌人血量显示
-		this.blood=new cc.Sprite("#blood.png");
-		var pos=cc.p(this.sprite.getPositionX(),this.sprite.getPositionY()+this.sprite.getContentSize().height/2+this.blood.getContentSize().height);
-		this.blood.setPosition(pos);
-		this.spriteSheet.addChild(this.blood);
-		this.controller.setBossIcon(this.blood);
-		
 		this.scheduleUpdate();
 		
 	},
 	update:function(){
-		var animationLayer=this.getParent().getChildByTag(TagOfLayer.Animation);
+		var animationLayer=this.controller.AnimationLayer;
 		//使Enemy位置固定
-		this.body.p=cc.p(animationLayer.getEye().width+cc.director.getWinSize().width-100-g_startX,this.high);
-		var pos=cc.p(this.sprite.getPositionX(),this.sprite.getPositionY()+this.sprite.getContentSize().height/2+this.blood.getContentSize().height);
-		this.blood.setPosition(pos);
+		var vel=animationLayer.body.getVel();
+		vel.y=0;
+		this.body.setVel(vel);
 	},
-	
-	
-	//设置enemy的基本属性
-	//TODO
-	initProperty:function(){
+	//敌人被攻击后采取的行动 更换位置+可能掉装备
+	postHited:function(){
+		this.randomPlace();
+		this.controller.leftEquipment(this.sprite.getPosition());
 	},
 	//enemy被攻击后改变位置
-	//TODO
-	changePlace:function(){
+	//TODO 需要更加合理的算法
+	randomPlace:function(){
 		var high=Math.random()*g_topHeight;
 		if(high<g_groundHeight){
 			high=g_groundHeight;
@@ -82,7 +72,10 @@ var EnemyLayer=cc.Layer.extend({
 		else if((high+this.sprite.getContentSize().height)>g_topHeight){
 			high=g_topHeight-this.sprite.getContentSize().height;
 		}
+		var _high=this.high;
 		this.high=high;
+		var ch=this.high-_high;
+		this.sprite.runAction(cc.moveBy(1, cc.p(0,ch)));
 	},
 	//用于从游戏中删除
 	removeFromParent:function(){

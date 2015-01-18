@@ -29,7 +29,7 @@ var BackgroundLayer=cc.Layer.extend({
 	init:function(){
 		this.controller=Controller.getInstance();
 		//载入第一张地图
-		var beginMap=new cc.TMXTiledMap(res.beginMap.find(this.tagOfScene));
+		var beginMap=new cc.TMXTiledMap(beginMaps.find(this.tagOfScene));
 		this.addChild(beginMap);
 		this.closedMapKey.push("beginMap");
 		this.closedMap.push(beginMap);
@@ -45,14 +45,14 @@ var BackgroundLayer=cc.Layer.extend({
 		this.closedMap=[];
 		this.objects=[];
 		//根据不同场景更换地图
-		this.openMapKey=res.map_Resource.find(this.tagOfScene).concat();//复制一份
-		this.openMap=tileMapsOfCity;
+		this.openMapKey=map_Resources.find(this.tagOfScene).concat();//复制一份
+		this.openMap=tileMaps.find(this.tagOfScene);
 		
 		this.scheduleUpdate();
 	},
 	
 	update:function(){
-		var animationLayer=this.getParent().getChildByTag(TagOfLayer.Animation);
+		var animationLayer=this.controller.AnimationLayer;
 		var eye=animationLayer.getEye();
 		this.checkAndReload(eye.width);
 		
@@ -64,7 +64,6 @@ var BackgroundLayer=cc.Layer.extend({
 			return false;
 		}
 		
-		//TODO 载入随机地图
 		var map=this.randomMap();
 		map.setPosition(this.mapSize.width*(newMapIndex+1),0);
 		this.addChild(map,0);
@@ -75,7 +74,6 @@ var BackgroundLayer=cc.Layer.extend({
 		return true;
 	},
 	//随机地图
-	//TODO
 	randomMap:function(){
 		var lengthOfMaps=this.openMapKey.length;
 		var num=parseInt(Math.random()*lengthOfMaps);
@@ -95,7 +93,7 @@ var BackgroundLayer=cc.Layer.extend({
 	//载入物体
 	loadObjects:function(map,mapIndex){
 		//障碍物
-		var hinderGroup=map.getObjectGroup("object");
+		var hinderGroup=map.getObjectGroup("hinder");
 		var hinderArray=hinderGroup.getObjects();
 		for(var i=0;i<hinderArray.length;i++){
 			var hinder=new Hinder(this.spriteSheet,
@@ -106,15 +104,15 @@ var BackgroundLayer=cc.Layer.extend({
 			this.objects.push(hinder);
 		};
 		//修复器
-		var repairGroup=map.getObjectGroup("repair");
-		var repairArray=repairGroup.getObjects();
-		for(var i=0;i<repairArray.length;i++){
-			var repair=new Repair(this.spriteSheet,
+		var rewardGroup=map.getObjectGroup("reward");
+		var rewardArray=rewardGroup.getObjects();
+		for(var i=0;i<rewardArray.length;i++){
+			var reward=new Reward(this.spriteSheet,
 					this.space,
-					cc.p(repairArray[i]["x"]+this.mapSize.width*mapIndex,repairArray[i]["y"]),
-					repairArray[i]["name"]);
-			repair._mapIndex=mapIndex;
-			this.objects.push(repair);
+					cc.p(rewardArray[i]["x"]+this.mapSize.width*mapIndex,rewardArray[i]["y"]),
+					rewardArray[i]["name"]);
+			reward._mapIndex=mapIndex;
+			this.objects.push(reward);
 		};
 	},
 	//移除物体
@@ -140,7 +138,7 @@ var BackgroundLayer=cc.Layer.extend({
 	//根据shape移除物体
 	removeObjectByShape:function (shape) {
 	for (var i = 0; i < this.objects.length; i++) {
-		if (this.objects[i].getShape() == shape) {
+		if (this.objects[i].getBody() == shape.getBody()) {
 			this.objects[i].removeFromParent();
 			this.objects.splice(i, 1);
 			break;

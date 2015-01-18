@@ -8,26 +8,18 @@
   "engineDir": "frameworks/cocos2d-html5",
   "modules": [
     "cocos2d",
-    "chipmunk",
+    "extensions",
     "external"
   ],
   "jsList": [
-    
     "src/util.js",
     "src/Recognizer.js",
     "src/Filter.js",
-    
     "src/StorageManager.js",
-    
-    "src/global.js",
     "src/resource.js",
-    
     "src/Controller.js",
-    "src/SceneTemplate.js",
-    
     "src/Hinder.js",
-    "src/Repair.js",
-    
+    "src/Reward.js",
     "src/WelcomeLayer.js",
     "src/LevelSelectLayer.js",
     "src/AnimationLayer.js",
@@ -35,11 +27,8 @@
     "src/EnemyLayer.js",
     "src/ForegroundLayer.js",
     "src/GameOverLayer.js",
-    
     "src/WelcomeScene.js",
     "src/LevelSelectScene.js",
-    "src/CityScene.js",
-    "src/CountryScene.js",
-    "src/OutSpaceScene.js"
+    "src/PlayingScene.js"
   ]
 }
