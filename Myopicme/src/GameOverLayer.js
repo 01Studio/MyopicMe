@@ -16,15 +16,15 @@ var GameOverLayer=cc.LayerColor.extend({
 		this.init();
 	},
 	saveData:function(){
-		this.controller.GameScene.glassRepair.each(
+		this.controller.GameScene.glassesRepair.each(
 			function(num,key){
 				var manager=new StorageManager();
-				manager.repairGlass(key, num);
+				manager.repairGlasses(key, num);
 			}
 		);
 		var manager=new StorageManager();
-		var repaired=manager.getGlassRepaired(this.controller.GameScene.tagOfScene);
-		if(GlassMaps.find(this.controller.GameScene.tagOfScene).find("fixed")==repaired){
+		var repaired=manager.getGlassesRepaired(this.controller.GameScene.tagOfScene);
+		if(GlassesMaps.find(this.controller.GameScene.tagOfScene).find("fixed")==repaired){
 			manager.unlockNext(this.controller.GameScene.tagOfScene);
 		}
 		
@@ -76,7 +76,8 @@ var GameOverLayer=cc.LayerColor.extend({
 		//分数
 		var str="Your Score:"+this.controller.score+"\n"
 		+"HeightScore:"+manager.getHightestScore(this.controller.GameScene.tagOfScene)+"\n"
-		+(newScore?"new record!!!":"work hard");
+		+(newScore?"new record!!!":"work hard")+"\n"
+		+((this.tagOfGameOver==TagOfGameOver.win)?"glasses Of This Level is ok":"");
 		menuFont=new cc.MenuItemFont(str,null,null);
 		var menu=new cc.Menu(menuFont);
 		menu.setEnabled(false);

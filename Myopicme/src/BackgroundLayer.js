@@ -50,7 +50,9 @@ var BackgroundLayer=cc.Layer.extend({
 		
 		this.scheduleUpdate();
 	},
-	
+	getSpace:function(){
+		return this.space;
+	},
 	update:function(){
 		var animationLayer=this.controller.AnimationLayer;
 		var eye=animationLayer.getEye();

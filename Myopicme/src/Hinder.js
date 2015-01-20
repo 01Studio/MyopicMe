@@ -7,6 +7,7 @@ var Hinder=cc.Class.extend({
 	space:null,
 	sprite:null,
 	body:null,
+	shapes:null,
 	_mapIndex:0,
 	//获取与设置所在地图的标记
 	get mapIndex(){
@@ -22,6 +23,7 @@ var Hinder=cc.Class.extend({
 
 	ctor:function(spriteSheet,space,pos,name){
 		this.space=space;
+		this.shapes=[];
 		//加载图形
 		var sprite=new cc.PhysicsSprite(name);
 		var body = new cp.Body(Infinity, Infinity);
@@ -104,6 +106,7 @@ var Hinder=cc.Class.extend({
 			var shape=new cp.PolyShape(body, verts[i], cp.v(0, 0));
 			shape.setCollisionType(TagOfSprite.hinder);
 			this.space.addShape(shape);
+			this.shapes.push(shape);
 		}
 
 		spriteSheet.addChild(sprite,1);
@@ -113,18 +116,14 @@ var Hinder=cc.Class.extend({
 	},
 	//用于从游戏中删除
 	removeFromParent:function(){
-		this.body.eachShape(this.deleteShape);
-		this.body=null;
+		for(var i=0;i<this.shapes.length;i++){
+			this.space.removeStaticShape(this.shapes[i]);
+		}
+		this.shapes=[];
 		this.sprite.removeFromParent();
 		this.sprite=null;
 	},
-	//删除所有shape
-	deleteShape:function(shape){
-		//TODO web版本无法使用，载入机制不同
-		shape.space.removeStaticShape(shape);
-		shape=null;
-	},
-	//获取Body
+	//获取Body，用于确定多边形
 	getBody:function(){
 		return this.body;
 	}

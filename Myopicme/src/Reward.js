@@ -7,6 +7,7 @@ var Reward=cc.Class.extend({
 	space:null,
 	sprite:null,
 	body:null,
+	shapes:null,
 	_mapIndex:0,
 	//获取与设置所在地图的标记
 	get mapIndex(){
@@ -21,6 +22,7 @@ var Reward=cc.Class.extend({
 
 	ctor:function(spriteSheet,space,pos,name){
 		this.space=space;
+		this.shapes=[];
 		//加载图形
 		var sprite=new cc.PhysicsSprite(name);
 		var body = new cp.Body(Infinity, Infinity);
@@ -41,31 +43,41 @@ var Reward=cc.Class.extend({
 			temp.collisionType=TagOfSprite.repair;
 			verts.push(temp);
 			break;
-		case "#Def.png":
+		case "#GlassesHouse.png":
 			temp=[29.00000,23.50000,	
 			      29.00000,-23.50000,	
 			      -29.00000,-23.50000,	
 			      -29.00000,23.50000,];
-			temp.collisionType=TagOfSprite.glass;
-			temp.glassType=TagOfGlass.Def;
+			temp.collisionType=TagOfSprite.glasses;
+			temp.glassesType=TagOfGlasses.House;
 			verts.push(temp);
 			break;
-		case "#Night.png":
+		case "#GlassesStreet.png":
 			temp=[29.00000,23.50000,	
 			      29.00000,-23.50000,	
 			      -29.00000,-23.50000,	
 			      -29.00000,23.50000,];
-			temp.collisionType=TagOfSprite.glass;
-			temp.glassType=TagOfGlass.Night;
+			temp.collisionType=TagOfSprite.glasses;
+			temp.glassesType=TagOfGlasses.Street;
+			verts.push(temp);
+			break;
+		case "#GlassesRoad.png":
+			temp=[29.00000,23.50000,	
+			      29.00000,-23.50000,	
+			      -29.00000,-23.50000,	
+			      -29.00000,23.50000,];
+			temp.collisionType=TagOfSprite.glasses;
+			temp.glassesType=TagOfGlasses.Road;
 			verts.push(temp);
 			break;
 		}
 		for(var i=0;i<verts.length;i++){
 			var shape=new cp.PolyShape(body, verts[i], cp.v(0, 0));
 			shape.setCollisionType(verts[i].collisionType);
-			shape.glassType=verts[i].glassType;
+			shape.glassesType=verts[i].glassesType;
 			shape.setSensor(true);
 			this.space.addShape(shape);
+			this.shapes.push(shape);
 		}
 
 		spriteSheet.addChild(sprite,1);
@@ -75,17 +87,14 @@ var Reward=cc.Class.extend({
 	},
 	//用于从游戏中删除
 	removeFromParent:function(){
-		this.body.eachShape(this.deleteShape);
+		for(var i=0;i<this.shapes.length;i++){
+			this.space.removeStaticShape(this.shapes[i]);
+		}
+		this.shapes=[];
 		this.sprite.removeFromParent();
 		this.sprite=null;
 	},
-	//删除所有shape
-	deleteShape:function(shape){
-		shape.space.removeStaticShape(shape);
-		shape=null;
-	}
-	,
-	//获取Body
+	//获取Body，用于确定多边形
 	getBody:function(){
 		return this.body;
 	}

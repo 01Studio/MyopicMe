@@ -27,21 +27,34 @@ var ForegroundLayer=cc.Layer.extend({
 		this.addChild(fire,1);
 		this.controller.setFireIcon(fire);
 
+
 		//英雄头像
 		var heroIcon=new cc.Sprite(res.heroIcon);
 		heroIcon.setPosition(100, winSize.height-100);
 		this.addChild(heroIcon,1);
 		this.controller.setHeroIcon(heroIcon);
-
-		//眼镜生命值
-		var glassIcon=new cc.Sprite(res.glassIcon);	
-		glassIcon.setPosition(220+glassIcon.getContentSize().width/2, winSize.height-100);
-		this.addChild(glassIcon,1);
-		this.controller.setGlassIcon(glassIcon);
+		
+		cc.spriteFrameCache.addSpriteFrames(res.objects_plist);
+		var spriteSheet=new cc.SpriteBatchNode(res.objects_png);
+		this.addChild(spriteSheet, 1);
+		var glasses=new cc.Sprite(GlassesMaps.find(new StorageManager().getGlassesUsingKey()).find("name"));
+		glasses.setPosition(100, winSize.height-80);
+		spriteSheet.addChild(glasses,1);
+		this.controller.setHeroIcon(glasses);
+		
+		//眼镜生命值		
+		var glassesIcon = new ccui.LoadingBar();
+		glassesIcon.loadTexture(res.glassesIcon);
+		glassesIcon.setPercent(100);
+		glassesIcon.setPosition(220+glassesIcon.getContentSize().width/2, winSize.height-100);
+		this.addChild(glassesIcon,1);
+		this.controller.setGlassesIcon(glassesIcon);
 
 		//时间值
-		var timeIcon=new cc.Sprite(res.timeIcon);	
-		timeIcon.setPosition(20+glassIcon.getPositionX()+glassIcon.getContentSize().width/2+timeIcon.getContentSize().width/2, winSize.height-100);
+		var timeIcon = new ccui.LoadingBar();
+		timeIcon.loadTexture(res.timeIcon);
+		timeIcon.setPercent(100);
+		timeIcon.setPosition(20+glassesIcon.getPositionX()+glassesIcon.getContentSize().width/2+timeIcon.getContentSize().width/2, winSize.height-100);
 		this.addChild(timeIcon,1);
 		this.controller.setTimeIcon(timeIcon);
 		
@@ -52,6 +65,7 @@ var ForegroundLayer=cc.Layer.extend({
 		scoreIcon.x = 10;
 		scoreIcon.y = 100;
 		scoreIcon.opacity = 200;
+		
 		//添加分数提醒
 		var scoreAddIcon = new cc.LabelAtlas("0", res.font_plist);
 		scoreAddIcon.setColor(cc.color(255, 0, 0, 255));

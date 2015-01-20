@@ -10,12 +10,12 @@ StorageManager.prototype={
 	//数据初始化
 	reset:function(){
 		this.ls.setItem("unlocked",0);
-		this.ls.setItem("glassUsing",TagOfGlass.Def);
-		GlassMaps.each(this.resetRepaired);
+		this.ls.setItem("GlassesUsing",TagOfGlasses.House);
+		GlassesMaps.each(this.resetRepaired);
 		SceneMaps.each(this.resetHeightScore);
 	},
 	resetRepaired:function(num,key){
-		cc.sys.localStorage.setItem(GlassMaps.find(key).find("name"),1);
+		cc.sys.localStorage.setItem(GlassesMaps.find(key).find("name"),1);
 	},
 	resetHeightScore:function(num,key){
 		cc.sys.localStorage.setItem(SceneMaps.find(key).find("name"),0);
@@ -67,16 +67,16 @@ StorageManager.prototype={
 	 * @param key
 	 * @param num
 	 */
-	repairGlass:function(key,num){
-		var repaired=this.getGlassRepaired(key);
+	repairGlasses:function(key,num){
+		var repaired=this.getGlassesRepaired(key);
 		repaired+=num;
-		if(repaired>GlassMaps.find(key).find("fixed")){
-			repaired=GlassMaps.find(key).find("fixed");
+		if(repaired>GlassesMaps.find(key).find("fixed")){
+			repaired=GlassesMaps.find(key).find("fixed");
 		}
-		this.ls.setItem(GlassMaps.find(key).find("name"),repaired);
+		this.ls.setItem(GlassesMaps.find(key).find("name"),repaired);
 	},
-	getGlassRepaired:function(key){
-		var name=GlassMaps.find(key).find("name");
+	getGlassesRepaired:function(key){
+		var name=GlassesMaps.find(key).find("name");
 		var value=this.ls.getItem(name);
 		var num=parseInt(value);
 		if("NaN"==num.toString()){
@@ -89,15 +89,16 @@ StorageManager.prototype={
 	 * 当前正使用眼镜的索引
 	 * @returns
 	 */
-	getGlassUsingKey:function(){
-		var key=this.ls.getItem("glassUsing");
-		if(""==key){
-			this.ls.setItem("glassUsing",TagOfGlass.Def);
-			key=TagOfGlass.Def;
+	getGlassesUsingKey:function(){
+		var keyString=this.ls.getItem("GlassesUsing");
+		var key=parseInt(keyString);
+		if("NaN"==key.toString()){
+			//cc.log(key.toString());
+			key=0;
 		}
 		return key;
 	},
-	setGlassUsing:function(key){
-		this.ls.setItem("glassUsing",key);
+	setGlassesUsing:function(key){
+		this.ls.setItem("GlassesUsing",key);
 	}
 }

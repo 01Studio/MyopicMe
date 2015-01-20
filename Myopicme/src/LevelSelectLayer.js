@@ -10,87 +10,100 @@ var LevelSelectLayer=cc.Layer.extend({
 	init:function(){
 		var manager=new StorageManager();
 		var unlocked=manager.unlocked();
-
 		var winSize=cc.director.getWinSize();
-		//CityScene
-		var menuFont=new cc.MenuItemFont("CityScene",this.CityScene,null);
-		var menu=new cc.Menu(menuFont);
-		var centerPos=new cc.p(winSize.width/2,winSize.height/2+100);
-		menu.setPosition(centerPos);
-		//设置是否可以玩耍
-		if(unlocked<TagOfScene.CityScene){
-			menu.setEnabled(false);
-			menu.setColor(new cc.Color(255, 0, 0, 255));
-		}
-		this.addChild(menu);
 		
-		//CountryScene
-		menuFont=new cc.MenuItemFont("CountryScene",this.CountryScene,null);
-		menu=new cc.Menu(menuFont);
-		centerPos=new cc.p(winSize.width/2,winSize.height/2);
-		menu.setPosition(centerPos);
-		//设置是否可以玩耍
-		if(unlocked<TagOfScene.CountryScene){
-			menu.setEnabled(false);
-			menu.setColor(new cc.Color(255, 0, 0, 255));
-		}
-		this.addChild(menu);
-		
-		//OutSpaceScene
-		menuFont=new cc.MenuItemFont("OutSpaceScene",this.OutSpaceScene,null);
-		menu=new cc.Menu(menuFont);
-		centerPos=new cc.p(winSize.width/2,winSize.height/2-100);
-		menu.setPosition(centerPos);
-		//设置是否可以玩耍
-		if(unlocked<TagOfScene.OutSpaceScene){
-			menu.setEnabled(false);
-			menu.setColor(new cc.Color(255, 0, 0, 255));
-		}
-		this.addChild(menu);
+		//pageview 大场景转换
+		var pageView = new ccui.PageView();
+		pageView.setTouchEnabled(true);
+		pageView.setContentSize(winSize);
+		pageView.x = 0;
+		pageView.y = 0;
 
-		///// TODO 数据展示，解锁关卡
-		var str="Score\n"
-			+"city:"+manager.getHightestScore(TagOfScene.CityScene)+"\n"
-			+"country:"+manager.getHightestScore(TagOfScene.CountryScene)+"\n"
-			+"outspace:"+manager.getHightestScore(TagOfScene.OutSpaceScene)+"\n"
-		menuFont=new cc.MenuItemFont(str,null,null);
-		menu=new cc.Menu(menuFont);
-		menu.setEnabled(false);
-		menu.setColor(new cc.Color(255, 255, 0, 255));
-		centerPos=new cc.p(winSize.width/2-200,winSize.height/2);
-		menu.setPosition(centerPos);
-		this.addChild(menu);
+
+		var imageSize=new cc.size(winSize.width/6, winSize.height/5);
+		for (var j = 0; j < 5; j++) {
+			var layout = new ccui.Layout();
+			layout.setContentSize(winSize);
+			for(var i=0;i<3;i++){
+				if(j*3+i>13)break;
+				var imageView = new ccui.ImageView();
+				imageView.setScale9Enabled(true);
+				imageView.loadTexture(res.timeIcon);
+				imageView.setContentSize(imageSize);
+				imageView.tagOfScene=j*3+i;
+				if(unlocked<imageView.tagOfScene){
+					imageView.setTouchEnabled(false);
+					imageView.setFlippedX(true);
+				}
+				else{
+					imageView.setTouchEnabled(true);
+				}
+				imageView.addClickEventListener(this.RunScene);
+				imageView.x = imageSize.width*(i*2+1);
+				imageView.y = imageSize.height;
+				layout.addChild(imageView);
+
+				var text = new ccui.Text();
+				text.string = SceneMaps.find(j*3+i).find("name")+"\n"
+					+manager.getHightestScore(imageView.tagOfScene);
+				text.font = "30px 'Marker Felt'";
+				text.color = cc.color(192, 192, 192);
+				text.x = imageSize.width*(i*2+1);
+				text.y = imageSize.height*2;
+				layout.addChild(text);
+			}
+			
+			pageView.addPage(layout);
+		}
+		this.addChild(pageView);
 		
 		
-		//当前眼镜
-		var key=manager.getGlassUsingKey();
-		var str="Glass:Using\n"
-			+GlassMaps.find(key).find("name")
-			+"\n repaired:"+manager.getGlassRepaired(key)+"/"+GlassMaps.find(key).find("fixed")
-			+"\n attack:"+GlassMaps.find(key).find("attack");
-		var glassMenuFont=new cc.MenuItemFont(str,null,null);
-		var glassMenu=new cc.Menu(glassMenuFont);
-		glassMenu.setEnabled(false);
-		glassMenu.setColor(new cc.Color(255, 255, 0, 255));
-		centerPos=new cc.p(winSize.width/2+300,winSize.height/2);
-		glassMenu.setPosition(centerPos);
-		this.addChild(glassMenu);
+		//当前眼镜状态
+		var key=manager.getGlassesUsingKey();
+		var str="Glasses:Using\n"
+			+GlassesMaps.find(key).find("name")
+			+"\n repaired:"+manager.getGlassesRepaired(key)+"/"+GlassesMaps.find(key).find("fixed")
+			+"\n attack:"+GlassesMaps.find(key).find("attack");
+		var glassesMenuFont=new cc.MenuItemFont(str,null,null);
+		var glassesMenu=new cc.Menu(glassesMenuFont);
+		glassesMenu.setEnabled(false);
+		glassesMenu.setColor(new cc.Color(255, 255, 0, 255));
+		centerPos=new cc.p(winSize.width/2+300,winSize.height/10*9);
+		glassesMenu.setPosition(centerPos);
+		this.addChild(glassesMenu);
 		
 		
 		menuFont=new cc.MenuItemFont("before",
 		function(){
-			key=(key-1)<0?TagOfGlass.Gold:key-1;
-			manager.setGlassUsing(key);
+			key=(key-1)<0?TagOfGlasses.SolarSystem:(key-1);
+			manager.setGlassesUsing(key);
 
-			var str="Glass:Using\n"
-				+GlassMaps.find(key).find("name")
-				+"\n repaired:"+manager.getGlassRepaired(key)+"/"+GlassMaps.find(key).find("fixed")
-				+"\n attack:"+GlassMaps.find(key).find("attack");
-			glassMenuFont.setString(str);
+			var str="Glasses:Using\n"
+				+GlassesMaps.find(key).find("name")
+				+"\n repaired:"+manager.getGlassesRepaired(key)+"/"+GlassesMaps.find(key).find("fixed")
+				+"\n attack:"+GlassesMaps.find(key).find("attack");
+			glassesMenuFont.setString(str);
 		}
 		,null);
 		menu=new cc.Menu(menuFont);
-		centerPos=new cc.p(winSize.width/2+200,winSize.height/2-100);
+		centerPos=new cc.p(winSize.width/2+200,winSize.height/10*9-100);
+		menu.setPosition(centerPos);
+		this.addChild(menu);
+		
+		menuFont=new cc.MenuItemFont("next",
+				function(){
+			key=(key+1)>TagOfGlasses.SolarSystem?0:(key+1);
+			manager.setGlassesUsing(key);
+
+			var str="Glasses:Using\n"
+				+GlassesMaps.find(key).find("name")
+				+"\n repaired:"+manager.getGlassesRepaired(key)+"/"+GlassesMaps.find(key).find("fixed")
+				+"\n attack:"+GlassesMaps.find(key).find("attack");
+			glassesMenuFont.setString(str);
+		}
+		,null);
+		menu=new cc.Menu(menuFont);
+		centerPos=new cc.p(winSize.width/2+300,winSize.height/10*9-100);
 		menu.setPosition(centerPos);
 		this.addChild(menu);
 		
@@ -98,28 +111,20 @@ var LevelSelectLayer=cc.Layer.extend({
 		//exit
 		menuFont=new cc.MenuItemFont("Back",this.BackUp,null);
 		menu=new cc.Menu(menuFont);
-		centerPos=new cc.p(winSize.width/4*3,winSize.height/4);
+		centerPos=new cc.p(winSize.width/2+400,winSize.height/10*9-100);
 		menu.setPosition(centerPos);
 		this.addChild(menu);
 		
-		
 		this._super();
 	},
-	//城市
-	CityScene:function(){
-		cc.director.runScene(new PlayingScene(TagOfScene.CityScene));
-	},
-	//郊区
-	CountryScene:function(){
-		cc.director.runScene(new PlayingScene(TagOfScene.CountryScene));
-	},
-	//外太空
-	OutSpaceScene:function(){
-		cc.director.runScene(new PlayingScene(TagOfScene.OutSpaceScene));
+	//运行游戏
+	RunScene:function(_this){
+		var action=new cc.Sequence(cc.rotateBy(0.3, 180, 0),
+				new cc.CallFunc(function(){cc.director.runScene(new PlayingScene(_this.tagOfScene))}));
+		_this.runAction(action);
 	},
 	//回退
 	BackUp:function(){
 		cc.director.runScene(new WelcomeScene());
-		var d=new StorageManager();
 	}
 });

@@ -16,9 +16,9 @@ var Controller=cc.Class.extend({
 	//英雄状态
 	heroIcon:null,//卖萌，显示眼镜种类
 	//眼镜状态
-	glassIcon:null,
-	glassAll:null,
-	glassNow:null,
+	glassesIcon:null,
+	glassesAll:null,
+	glassesNow:null,
 	//时间状态
 	timeIcon:null,
 	timeAll:null,
@@ -62,16 +62,17 @@ var Controller=cc.Class.extend({
 	},
 	/**
 	 * 初始化游戏状态
-	 * @param {Number} glass
+	 * @param {Number} glasses
 	 * @param {Number} time
 	 * @param {Number} level
 	 * @param {Number} attack
 	 */
-	initStatus:function(glass,time,level,attack){
-		this.glassAll=glass;
-		this.glassNow=this.glassAll;
+	initStatus:function(glasses,time,level,attack){
+		this.glassesAll=glasses;
+		this.glassesNow=this.glassesAll;
 		this.timeAll=time;
 		this.timeNow=this.timeAll;
+		//TODO 尽量独立开
 		this.level=level;
 		this.attack=attack;
 	},
@@ -79,8 +80,8 @@ var Controller=cc.Class.extend({
 	setHeroIcon:function(icon){
 		this.heroIcon=icon;
 	},
-	setGlassIcon:function(icon){
-		this.glassIcon=icon;
+	setGlassesIcon:function(icon){
+		this.glassesIcon=icon;
 	},
 	setTimeIcon:function(icon){
 		this.timeIcon=icon;
@@ -108,10 +109,10 @@ var Controller=cc.Class.extend({
 	 * 主角开火
 	 */
 	fire:function(){
-		if(this.glassNow>0){
-			this.glassNow--;
-			this.glassIcon.setScaleX(this.glassNow/this.glassAll);
-			this.filter.setBlurSize((this.glassAll-this.glassNow)*10);
+		if(this.glassesNow>0){
+			this.glassesNow--;
+			this.glassesIcon.setPercent((this.glassesNow/this.glassesAll)*100);
+			this.filter.setBlurSize((this.glassesAll-this.glassesNow)/this.glassesAll*100);
 			this.AnimationLayer.fire();
 			//audioEngine.playEffect(res.xrayEffect, false);
 		}
@@ -120,17 +121,16 @@ var Controller=cc.Class.extend({
 	 * 修复
 	 */
 	repair:function(){
-		if(this.glassNow<this.glassAll){
-			this.glassNow++;
-			this.glassIcon.setScaleX(this.glassNow/this.glassAll);
+		if(this.glassesNow<this.glassesAll){
+			this.glassesNow++;
+			this.glassesIcon.setPercent((this.glassesNow/this.glassesAll)*100);
 		}
-		this.filter.setBlurSize((this.glassAll-this.glassNow)*10);
+		this.filter.setBlurSize((this.glassesAll-this.glassesNow)/this.glassesAll*100);
 	},
 	/**
 	 * 击中Boss
 	 */
 	hitBoss:function(){
-		//TODO 击中boss，延缓boss逃跑时间
 		this.timeNow+=this.attack;
 		if(this.timeNow>this.timeAll){
 			this.timeNow=this.timeAll;
@@ -144,18 +144,19 @@ var Controller=cc.Class.extend({
 	 * @param odds
 	 */
 	leftEquipment:function(pos){
+		//TODO 随机公式
 		var random=Math.random();
-		var odds=0.6;
+		var odds=0.0;
 		if(random<odds){//60%机会
 			var rewardAttr={};
 			rewardAttr.pos=pos;
 			rewardAttr.type=TagOfSprite.repair;
 			this.rewards.push(rewardAttr);
 		}
-		else if(random<(odds+1)/2){//20%
+		else if(random<(odds+1)/2){//20%机会
 			var rewardAttr={};
 			rewardAttr.pos=pos;
-			rewardAttr.type=TagOfSprite.glass;
+			rewardAttr.type=TagOfSprite.glasses;
 			this.rewards.push(rewardAttr);
 		}
 	},
@@ -166,7 +167,7 @@ var Controller=cc.Class.extend({
 	 */
 	update:function(distance){
 		//分数
-		this.timeIcon.setScaleX(this.timeNow/this.timeAll);
+		this.timeIcon.setPercent((this.timeNow/this.timeAll)*100);
 		this.score=this.baseScore+distance;
 		this.scoreIcon.setString(this.score);
 		//rewards实现
@@ -175,8 +176,8 @@ var Controller=cc.Class.extend({
 			var pos=rewardAttr.pos;
 			var type=rewardAttr.type;
 			var name=null;
-			if(type==TagOfSprite.glass){
-				name=GlassMaps.find(this.GameScene.tagOfScene).find("name");
+			if(type==TagOfSprite.glasses){
+				name=GlassesMaps.find(this.GameScene.tagOfScene).find("name");
 			}
 			else{
 				name="#repair.png";
@@ -186,7 +187,7 @@ var Controller=cc.Class.extend({
 					backgroundLayer.space,
 					pos,
 					name);
-			reward._mapIndex=backgroundLayer.mapIndex+1;//当前mapIndex+1，防止被误删
+			reward._mapIndex=backgroundLayer.mapIndex+1;
 			backgroundLayer.objects.push(reward);
 		}
 		//渲染

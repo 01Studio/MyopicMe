@@ -9,13 +9,17 @@
   </data>
  </layer>
  <objectgroup name="hinder">
-  <object name="#rock.png" x="354" y="352"/>
-  <object name="#rock.png" x="888.667" y="408"/>
-  <object name="#rabish.png" x="750.333" y="330.333"/>
-  <object name="#light.png" x="1281.97" y="137.03" width="296" height="500"/>
+  <object name="#rock.png" x="582" y="269"/>
+  <object name="#rock.png" x="763.667" y="148"/>
+  <object name="#rabish.png" x="440.333" y="140.333"/>
  </objectgroup>
  <objectgroup name="reward">
-  <object name="#repair.png" x="582" y="146"/>
-  <object name="#Def.png" x="507" y="573"/>
+  <object name="#repair.png" x="781" y="399"/>
+  <object name="#repair.png" x="437" y="584"/>
+  <object name="#repair.png" x="512" y="587"/>
+  <object name="#repair.png" x="611" y="583"/>
+  <object name="#GlassesStreet.png" x="795" y="580"/>
+  <object name="#GlassesStreet.png" x="930" y="572"/>
+  <object name="#GlassesStreet.png" x="1038" y="575"/>
  </objectgroup>
 </map>

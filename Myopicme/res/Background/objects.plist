@@ -4,33 +4,7 @@
 <dict>
 	<key>frames</key>
 	<dict>
-		<key>Def.png</key>
-		<dict>
-			<key>frame</key>
-			<string>{{442,101},{58,47}}</string>
-			<key>offset</key>
-			<string>{0,0}</string>
-			<key>rotated</key>
-			<false/>
-			<key>sourceColorRect</key>
-			<string>{{0,0},{58,47}}</string>
-			<key>sourceSize</key>
-			<string>{58,47}</string>
-		</dict>
-		<key>Desert.png</key>
-		<dict>
-			<key>frame</key>
-			<string>{{297,0},{72,31}}</string>
-			<key>offset</key>
-			<string>{0,0}</string>
-			<key>rotated</key>
-			<false/>
-			<key>sourceColorRect</key>
-			<string>{{0,0},{72,31}}</string>
-			<key>sourceSize</key>
-			<string>{72,31}</string>
-		</dict>
-		<key>Gold.png</key>
+		<key>GlassesAfrica.png</key>
 		<dict>
 			<key>frame</key>
 			<string>{{442,56},{63,26}}</string>
@@ -43,7 +17,150 @@
 			<key>sourceSize</key>
 			<string>{64,64}</string>
 		</dict>
-		<key>Night.png</key>
+		<key>GlassesAntarctica.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,56},{63,26}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{1,19},{63,26}}</string>
+			<key>sourceSize</key>
+			<string>{64,64}</string>
+		</dict>
+		<key>GlassesBeijing.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,56},{63,26}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{1,19},{63,26}}</string>
+			<key>sourceSize</key>
+			<string>{64,64}</string>
+		</dict>
+		<key>GlassesDubai.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,56},{63,26}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{1,19},{63,26}}</string>
+			<key>sourceSize</key>
+			<string>{64,64}</string>
+		</dict>
+		<key>GlassesEurope.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,56},{63,26}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{1,19},{63,26}}</string>
+			<key>sourceSize</key>
+			<string>{64,64}</string>
+		</dict>
+		<key>GlassesHongKong.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,56},{63,26}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{1,19},{63,26}}</string>
+			<key>sourceSize</key>
+			<string>{64,64}</string>
+		</dict>
+		<key>GlassesHouse.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,101},{58,47}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{0,0},{58,47}}</string>
+			<key>sourceSize</key>
+			<string>{58,47}</string>
+		</dict>
+		<key>GlassesMoon.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,56},{63,26}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{1,19},{63,26}}</string>
+			<key>sourceSize</key>
+			<string>{64,64}</string>
+		</dict>
+		<key>GlassesMoscow.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,56},{63,26}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{1,19},{63,26}}</string>
+			<key>sourceSize</key>
+			<string>{64,64}</string>
+		</dict>
+		<key>GlassesRoad.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{297,0},{72,31}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{0,0},{72,31}}</string>
+			<key>sourceSize</key>
+			<string>{72,31}</string>
+		</dict>
+		<key>GlassesShanghai.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,56},{63,26}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{1,19},{63,26}}</string>
+			<key>sourceSize</key>
+			<string>{64,64}</string>
+		</dict>
+		<key>GlassesSolarSystem.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,56},{63,26}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{1,19},{63,26}}</string>
+			<key>sourceSize</key>
+			<string>{64,64}</string>
+		</dict>
+		<key>GlassesStreet.png</key>
 		<dict>
 			<key>frame</key>
 			<string>{{442,32},{69,23}}</string>
@@ -55,6 +172,19 @@
 			<string>{{0,0},{69,23}}</string>
 			<key>sourceSize</key>
 			<string>{69,23}</string>
+		</dict>
+		<key>GlassesTokyo.png</key>
+		<dict>
+			<key>frame</key>
+			<string>{{442,56},{63,26}}</string>
+			<key>offset</key>
+			<string>{0,0}</string>
+			<key>rotated</key>
+			<false/>
+			<key>sourceColorRect</key>
+			<string>{{1,19},{63,26}}</string>
+			<key>sourceSize</key>
+			<string>{64,64}</string>
 		</dict>
 		<key>bullet.png</key>
 		<dict>

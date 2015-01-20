@@ -94,6 +94,12 @@ var AnimationLayer=cc.Layer.extend({
 		var rtn=event.getCurrentTarget().recognizer.endPoint();
 		cc.log("rtn="+rtn);
 		switch(rtn){
+		case "left":
+			event.getCurrentTarget().left();
+			break;
+		case "right":
+			event.getCurrentTarget().right();
+			break;
 		case "up":
 			event.getCurrentTarget().up();
 			break;
@@ -107,10 +113,23 @@ var AnimationLayer=cc.Layer.extend({
 			break;
 		}
 	},
+	//加速
+	left:function(){
+		var vel=this.body.getVel();
+		if(vel.x>max_speed+speed_step){
+			this.body.applyImpulse(cp.v(-speed_step,0),cp.v(0,0));
+		}
+		else if(this.body.getVel().x>max_speed){
+			vel.x=max_speed;
+			this.body.setVel(vel);
+		}
+	},
+	//加速
+	right:function(){
+		this.body.applyImpulse(cp.v(speed_step,0),cp.v(0,0));
+	},
 	//向上
 	up:function(){
-		
-		cc.log("up");
 		//当人物为跑步或下降状态时可跳起
 		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
 			this.body.applyImpulse(cp.v(0,jump_vel*2),cp.v(0,0));
@@ -121,10 +140,13 @@ var AnimationLayer=cc.Layer.extend({
 		else{
 			this.body.applyImpulse(cp.v(0,jump_vel*2),cp.v(0,0));
 		}
-	},//小跳
+	},
+	//下滑动作
+	down:function(){
+		this.body.applyImpulse(cp.v(0, -800),cp.v(0, 0));
+	},
+	//小跳
 	jump:function(){
-
-		cc.log("jump");
 		//当人物为跑步或下降状态时可跳起
 		if(this.stat==RunnerStat.running||this.stat==RunnerStat.jumpDown){
 			this.body.applyImpulse(cp.v(0,jump_vel),cp.v(0,0));
@@ -132,10 +154,6 @@ var AnimationLayer=cc.Layer.extend({
 			this.sprite.stopAllActions();
 			this.sprite.runAction(this.jumpUpAction);
 		}
-	},
-	//下滑动作
-	down:function(){
-		this.body.applyImpulse(cp.v(0, -800),cp.v(0, 0));
 	},
 	//TODO 最好将此部分单独处理，AnimationLayer为人物动作处理层
 	//发射激光
@@ -148,7 +166,7 @@ var AnimationLayer=cc.Layer.extend({
 		//添加浮力
 		body.applyForce(cp.v(0, -space_gravity),cp.v(0, 0));
 		//添加子弹初始冲量
-		body.applyImpulse(cp.v(bullet_speed, 0),cp.v(0, 0));
+		body.applyImpulse(cp.v(bullet_speed+this.body.getVel().x, 0),cp.v(0, 0));
 		this.space.addBody(body);
 		this.spriteSheetBullet.addChild(sprite);
 		var shape=new cp.BoxShape(body,contentSize.width,contentSize.height);
@@ -174,9 +192,8 @@ var AnimationLayer=cc.Layer.extend({
 		
 		//设置最大速度
 		var vel=this.body.getVel();
-		//当人物速度小于10时（即人物碰撞），游戏结束
-		if(vel.x<10 && !cc.director.isPaused()){
-			cc.log("gamevoe");
+		//当人物速度小于50时（即人物碰撞），游戏结束
+		if(vel.x<dead_speed){
 			this.controller.askForGameOver(TagOfGameOver.hit);
 		}
 		//下降动作
@@ -203,7 +220,8 @@ var AnimationLayer=cc.Layer.extend({
 		}
 		//删除超出屏幕的子弹
 		for (var i = 0; i < this.bullets.length; i++) {
-			if (this.bullets[i].getPositionX()-this.sprite.getPositionX()>cc.director.getWinSize().width) {
+			if (this.bullets[i].getPositionX()-this.sprite.getPositionX()>cc.director.getWinSize().width
+					||this.sprite.getPositionX()-this.bullets[i].getPositionX()>cc.director.getWinSize().width) {
 				this.space.removeShape(this.bullets[i].shape);
 				this.bullets[i].removeFromParent();
 				this.bullets.splice(i, 1);

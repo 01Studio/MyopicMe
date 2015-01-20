@@ -9,7 +9,7 @@ PlayingScene=cc.Scene.extend({
 	bulletsToRemove:[],//准备删除的子弹，AnimationLayer中
 	shapesToRemove:[],//准备删除的其他物体，BackgroundLayer中
 	
-	glassRepair:null,
+	glassesRepair:null,
 	
 	ctor:function(tag){
 		this._super();
@@ -18,46 +18,47 @@ PlayingScene=cc.Scene.extend({
 	//启动runScene时调用
 	onEnter:function(){
 		this._super();
+		//初始化
 		var manager=new StorageManager();
-		var key=manager.getGlassUsingKey();
-		var glassRepaired=manager.getGlassRepaired(key);
+		var key=manager.getGlassesUsingKey();
+		var glassesRepaired=manager.getGlassesRepaired(key);
 		var time=SceneMaps.find(this.tagOfScene).find("time");
+		
+		this.bulletsToRemove=[];
+		this.shapesToRemove=[];
+		this.glassesRepair=new Hash();
+
 		//获取控制器
 		this.controller=Controller.getNewInstance();
-		this.controller.initStatus(glassRepaired,time,
-				GlassMaps.find(this.tagOfScene).find("fixed")-manager.getGlassRepaired(this.tagOfScene),
-				GlassMaps.find(key).find("attack"));
+		this.controller.GameScene=this;
+		this.controller.initStatus(glassesRepaired,time,
+				GlassesMaps.find(this.tagOfScene).find("fixed")-manager.getGlassesRepaired(this.tagOfScene),
+				GlassesMaps.find(key).find("attack"));
 		//初始化全局变量
 		InitGlobals(this.tagOfScene);
 		//初始化物理引擎
 		this.initPhysics();
-
-		//定义各游戏层
+		//初始化各游戏层，并加入控制器中
 		this.gameLayer=new cc.Layer();
-		backgroundLayer=new BackgroundLayer(this.space,this.tagOfScene);
-		var animationLayer=new AnimationLayer(this.space);
-		var enemyLayer=new EnemyLayer(this.space);
-		var foregroundLayer=new ForegroundLayer();
-
-		//添加到场景中
-		this.gameLayer.addChild(backgroundLayer, 0);
-		this.gameLayer.addChild(animationLayer, 0);
-		this.gameLayer.addChild(enemyLayer, 0);
 		this.addChild(this.gameLayer,0);
-		this.addChild(foregroundLayer, 0);
-
-		//加入控制器中
-		this.controller.BackgroundLayer=backgroundLayer;
-		this.controller.AnimationLayer=animationLayer;
-		this.controller.EnemyLayer=enemyLayer;
-		this.controller.ForegroundLayer=foregroundLayer;
 		this.controller.GameLayer=this.gameLayer;
-		this.controller.GameScene=this;
-
-		this.bulletsToRemove=[];
-		this.shapesToRemove=[];
-		this.glassRepair=new Hash();
-
+		
+		backgroundLayer=new BackgroundLayer(this.space,this.tagOfScene);
+		this.gameLayer.addChild(backgroundLayer, 0);
+		this.controller.BackgroundLayer=backgroundLayer;
+		
+		var animationLayer=new AnimationLayer(this.space);
+		this.gameLayer.addChild(animationLayer, 0);
+		this.controller.AnimationLayer=animationLayer;
+		
+		var enemyLayer=new EnemyLayer(this.space);
+		this.gameLayer.addChild(enemyLayer, 0);
+		this.controller.EnemyLayer=enemyLayer;
+		
+		var foregroundLayer=new ForegroundLayer();
+		this.addChild(foregroundLayer, 0);
+		this.controller.ForegroundLayer=foregroundLayer;
+		
 		cc.log("GameScene is load");
 
 		this.scheduleUpdate();
@@ -78,13 +79,13 @@ PlayingScene=cc.Scene.extend({
 		var wallBottom = new cp.SegmentShape(this.space.staticBody,
 				cp.v(0, g_groundHeight),// start point
 				cp.v(MAX_INT, g_groundHeight),// MAX INT:4294967295
-				0);// thickness of wall
+				10);// thickness of wall,防止飞出去
 		this.space.addStaticShape(wallBottom);
 		//上界
 		var wallTop = new cp.SegmentShape(this.space.staticBody,
 				cp.v(0, g_topHeight),// start point
 				cp.v(MAX_INT, g_topHeight),// MAX INT:4294967295
-				0);// thickness of wall
+				10);// thickness of wall
 		this.space.addStaticShape(wallTop);
 
 		this.space.addCollisionHandler(TagOfSprite.runner,TagOfSprite.hinder,
@@ -95,8 +96,8 @@ PlayingScene=cc.Scene.extend({
 				this.collision_xray_enemy.bind(this),null,null,null);
 		this.space.addCollisionHandler(TagOfSprite.xray,TagOfSprite.hinder,
 				this.collision_xray_hinder.bind(this),null,null,null);
-		this.space.addCollisionHandler(TagOfSprite.runner,TagOfSprite.glass,
-				this.collision_runner_glass.bind(this),null,null,null);
+		this.space.addCollisionHandler(TagOfSprite.runner,TagOfSprite.glasses,
+				this.collision_runner_glasses.bind(this),null,null,null);
 	},
 
 	//玩家与障碍
@@ -132,19 +133,19 @@ PlayingScene=cc.Scene.extend({
 		this.bulletsToRemove.push(shapes[0]);
 	},
 	//玩家和眼镜碎片
-	collision_runner_glass:function(arbiter,space){
-		cc.log("a collision happen between runner with glass");
-		this.controller.addBaseScore(score_glass);
+	collision_runner_glasses:function(arbiter,space){
+		cc.log("a collision happen between runner with glasses");
+		this.controller.addBaseScore(score_glasses);
 		var shapes=arbiter.getShapes();
 		this.shapesToRemove.push(shapes[1]);
-		var glassType=shapes[1].glassType;
-		var value=this.glassRepair.find(glassType);
+		var glassesType=shapes[1].glassesType;
+		var value=this.glassesRepair.find(glassesType);
 		if(value==null){
-			this.glassRepair.add(glassType, 1);
+			this.glassesRepair.add(glassesType, 1);
 		}
 		else{
 			value+=1;
-			this.glassRepair.update(glassType, value);
+			this.glassesRepair.update(glassesType, value);
 		}
 		this.controller.level--;
 		if(this.controller.level==0){
